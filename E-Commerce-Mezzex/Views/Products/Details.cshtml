@@ -1,0 +1,90 @@
+﻿@model E_Commerce_Mezzex.Models.ViewModel.ProductDetails
+
+@{
+    ViewBag.Title = "Product Details";
+}
+
+<div class="container mt-4">
+    <div class="row">
+        <div class="col-md-12">
+            <h2 class="mb-4">@Model.Name</h2>
+
+            <div class="card mb-4">
+                <div class="card-body">
+                    <h3 class="card-title">Product Details</h3>
+                    <p><strong>Short Description:</strong> @Model.ShortDescription</p>
+                    <p><strong>Full Description:</strong> @Html.Raw(Model.FullDescription)</p>
+                    <p><strong>Price:</strong> @Model.Price.ToString("C")</p>
+                    <p><strong>Category:</strong> @Model.GetCategoryHierarchy()</p>
+                    <p><strong>Brand:</strong> @Model.Brand</p>
+                    <p><strong>Not Returnable:</strong> @(Model.NotReturnable ? "Yes" : "No")</p>
+                    <p><strong>Disable Buy Button:</strong> @(Model.DisableBuyButton ? "Yes" : "No")</p>
+                    <p><strong>Disable Wishlist Button:</strong> @(Model.DisableWishlistButton ? "Yes" : "No")</p>
+                    <p><strong>Available Start Date:</strong> @Model.AvailableStartDateTimeUtc?.ToString("g")</p>
+                    <p><strong>Available End Date:</strong> @Model.AvailableEndDateTimeUtc?.ToString("g")</p>
+                    <p>
+                        <strong>Tags:</strong>
+                        @if (!string.IsNullOrEmpty(Model.TagNames))
+                        {
+                            var tags = Model.TagNames.Split(',').Select(t => t.Trim()).Where(t => !string.IsNullOrEmpty(t));
+                            foreach (var tag in tags)
+                            {
+                                <span class="badge bg-primary">@tag</span>
+                            }
+                        }
+                    </p>
+                </div>
+            </div>
+
+            <div class="card mb-4">
+                <div class="card-body">
+                    <h3 class="card-title">Media</h3>
+                    @if (Model.Images != null && Model.Images.Any())
+                    {
+                        <table class="table table-striped">
+                            <thead>
+                                <tr>
+                                    <th>Media</th>
+                                    <th>SEO Filename</th>
+                                    <th>Alt Attribute</th>
+                                    <th>Title Attribute</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @foreach (var image in Model.Images)
+                                {
+                                    <tr>
+                                        <td>
+                                            @if (image.MediaType == E_Commerce_Mezzex.Models.Domain.MediaType.Image)
+                                            {
+                                                <img src="@Url.Content(image.VirtualPath)" alt="@image.AltAttribute" title="@image.TitleAttribute" style="width: 100px;" class="img-thumbnail" />
+                                            }
+                                            else if (image.MediaType == E_Commerce_Mezzex.Models.Domain.MediaType.Video)
+                                            {
+                                                <video width="100" controls>
+                                                    <source src="@Url.Content(image.VirtualPath)" type="video/mp4">
+                                                    Your browser does not support the video tag.
+                                                </video>
+                                            }
+                                        </td>
+                                        <td>@image.SeoFilename</td>
+                                        <td>@image.AltAttribute</td>
+                                        <td>@image.TitleAttribute</td>
+                                    </tr>
+                                }
+                            </tbody>
+                        </table>
+                    }
+                    else
+                    {
+                        <p>No media available for this product.</p>
+                    }
+                </div>
+            </div>
+
+            <div class="mt-4">
+                <a href="@Url.Action("Index", "Products")" class="btn btn-primary">Back to List</a>
+            </div>
+        </div>
+    </div>
+</div>

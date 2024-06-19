@@ -1,0 +1,25 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.9.34728.123
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "E-Commerce-Mezzex", "E-Commerce-Mezzex\E-Commerce-Mezzex.csproj", "{4582DD03-5CE1-4839-AB90-9235741E9873}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{4582DD03-5CE1-4839-AB90-9235741E9873}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{4582DD03-5CE1-4839-AB90-9235741E9873}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{4582DD03-5CE1-4839-AB90-9235741E9873}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{4582DD03-5CE1-4839-AB90-9235741E9873}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {4427EC46-920A-4E3A-8EA1-3E949156F1C4}
+	EndGlobalSection
+EndGlobal

@@ -1,0 +1,35 @@
+﻿<div class="modal fade" id="editBrandModal" tabindex="-1" aria-labelledby="editBrandModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="editBrandModalLabel">Edit Brand</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <form id="editBrandForm">
+                    <div class="mb-3">
+                        <label for="brandName" class="form-label">Name</label>
+                        <input type="text" class="form-control" id="brandName" name="Name" value="@Model.Name" required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="brandShowOnHomePage" class="form-label">Show On Home Page</label>
+                        <input type="checkbox" class="form-check-input" id="brandShowOnHomePage" name="ShowOnHomePage" @(Model.ShowOnHomePage ? "checked" : "")>
+                    </div>
+                    <div class="mb-3">
+                        <label for="brandPublished" class="form-label">Published</label>
+                        <input type="checkbox" class="form-check-input" id="brandPublished" name="Published" @(Model.Published ? "checked" : "")>
+                    </div>
+                    <div class="mb-3">
+                        <label for="brandDeleted" class="form-label">Deleted</label>
+                        <input type="checkbox" class="form-check-input" id="brandDeleted" name="Deleted" @(Model.Deleted ? "checked" : "")>
+                    </div>
+                    <input type="hidden" name="Id" value="@Model.Id">
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                <button type="button" class="btn btn-primary" id="saveBrand">Save</button>
+            </div>
+        </div>
+    </div>
+</div>

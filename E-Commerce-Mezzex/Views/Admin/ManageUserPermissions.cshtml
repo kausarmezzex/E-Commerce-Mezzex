@@ -1,0 +1,44 @@
+﻿@model E_Commerce_Mezzex.Models.ViewModel.PermissionsViewModel
+
+@{
+    ViewData["Title"] = "User Permissions for Role: " + Model.SelectedRoleName;
+}
+
+<div class="container mt-4">
+    <h2 class="text-primary">User Permissions for Role: @Model.SelectedRoleName</h2>
+
+    <form asp-action="UpdateUserPermissions" method="post">
+        <input type="hidden" name="roleName" value="@Model.SelectedRoleName" /> <!-- Hidden input for roleName -->
+
+        <table class="table table-striped">
+            <thead>
+                <tr>
+                    <th scope="col">User</th>
+                    @foreach (var permission in Model.Permissions)
+                    {
+                        <th scope="col">@permission.Name</th>
+                    }
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var user in Model.Users)
+                {
+                    <tr>
+                        <td>@user.UserName</td>
+                        @foreach (var permission in Model.Permissions)
+                        {
+                            var userHasPermission = Model.UserPermissions.Any(up => up.UserId == user.Id && up.PermissionId == permission.Id);
+                            <td class="@(userHasPermission ? "table-success" : "table-danger")">
+                                <input type="checkbox" name="permissions[@user.Id][@permission.Id]" value="true" @(userHasPermission ? "checked" : "") />
+                                <input type="hidden" name="permissions[@user.Id][@permission.Id]" value="false" />
+                            </td>
+                        }
+                    </tr>
+                }
+            </tbody>
+        </table>
+
+        <button type="submit" class="btn btn-primary">Save Changes</button>
+        <a href="@Url.Action("ManageRolePermissions", "Admin")" class="btn btn-secondary">Back</a>
+    </form>
+</div>

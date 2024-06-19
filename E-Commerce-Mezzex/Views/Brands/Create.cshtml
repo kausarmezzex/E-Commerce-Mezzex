@@ -1,0 +1,100 @@
+﻿@model E_Commerce_Mezzex.Models.Domain.Brand
+
+@{
+    ViewData["Title"] = "Add New Brand";
+}
+
+<h2>Add New Brand</h2>
+
+
+<form asp-action="AddBrand" method="post">
+    <div class="form-group mb-3">
+        <label class="mb-2" asp-for="Name"></label>
+        <input asp-for="Name" class="form-control" />
+        <span asp-validation-for="Name" class="text-danger"></span>
+    </div>
+    <div class="form-group mb-3">
+        <label  asp-for="Description" class="control-labelform-label mb-2"></label>
+        <textarea asp-for="Description" id="content" class="form-control"></textarea>
+        <span asp-validation-for="Description" class="text-danger"></span>
+    </div>
+    <div class="form-group form-check mb-3">
+        <input asp-for="ShowOnHomePage" type="checkbox" class="form-check-input" />
+        <label asp-for="ShowOnHomePage" class="form-check-label"></label>
+    </div>
+    <div class="form-group mb-3">
+        <label asp-for="DisplayOrder" class="mb-2"></label>
+        <input asp-for="DisplayOrder" class="form-control" />
+        <span asp-validation-for="DisplayOrder" class="text-danger"></span>
+    </div>
+
+    <div class="mb-3">
+        <label class="form-label mb-2">Featured Image Upload</label>
+        <input type="file" id="featuredImageUpload" class="form-control" />
+        <img class="mb-2 mt-2" src="" id="featuredImageDisplay" style="display:none;width: 300px;" />
+    </div>
+
+    <div class="mb-3">
+        <label class="form-label mb-2">Featured Image URL</label>
+        <input type="text" class="form-control" id="featuredImageUrl" asp-for="ImageUrl" />
+    </div>
+    <div class="form-group form-check mb-3">
+        <input asp-for="Published" type="checkbox" class="form-check-input" />
+        <label asp-for="Published" class="form-check-label"></label>
+    </div>
+    <div class="form-group mb-3">
+        <label class="mb-2" asp-for="MetaKeywords"></label>
+        <input asp-for="MetaKeywords" class="form-control" />
+        <span asp-validation-for="MetaKeywords" class="text-danger"></span>
+    </div>
+    <div class="form-group mb-3">
+        <label class="mb-2" asp-for="MetaDescription"></label>
+        <textarea asp-for="MetaDescription" class="form-control"></textarea>
+        <span asp-validation-for="MetaDescription" class="text-danger"></span>
+    </div>
+    <div class="form-group mb-3">
+        <label class="mb-2" asp-for="MetaTitle"></label>
+        <input asp-for="MetaTitle" class="form-control" />
+        <span asp-validation-for="MetaTitle" class="text-danger"></span>
+    </div>
+    <button type="submit" class="btn btn-primary mb-2 mt-3">Add Brand</button>
+</form>
+
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+
+    <script>
+        var editor = new FroalaEditor('#content', {
+            imageUploadURL: '/api/images',
+            heightMin: 200 // Adjust the minimum height of the editor
+        });
+        // Elements for featured image upload and display
+        const featuredUploadElement = document.getElementById('featuredImageUpload');
+        const featuredImageUrlElement = document.getElementById('featuredImageUrl');
+        const featuredImageDisplayElement = document.getElementById('featuredImageDisplay');
+
+        // Function to upload featured image and set URL
+        async function uploadFeaturedImage(e) {
+            let data = new FormData();
+            data.append('file', e.target.files[0]);
+
+            await fetch('/api/images', {
+                method: 'POST',
+                headers: {
+                    'Accept': '*/*',
+                },
+                body: data
+            }).then(response => response.json())
+                .then(result => {
+                    featuredImageUrlElement.value = result.link;
+                    featuredImageDisplayElement.src = result.link;
+                    featuredImageDisplayElement.style.display = 'block';
+                });
+        }
+
+        // Attach event listener for featured image upload
+        featuredUploadElement.addEventListener('change', uploadFeaturedImage);
+    </script>
+}
+

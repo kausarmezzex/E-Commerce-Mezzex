@@ -1,0 +1,39 @@
+﻿<div class="modal fade" id="editCategoryModal" tabindex="-1" aria-labelledby="editCategoryModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="editCategoryModalLabel">Edit Category</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <form id="editCategoryForm">
+                    <div class="mb-3">
+                        <label for="categoryName" class="form-label">Name</label>
+                        <input type="text" class="form-control" id="categoryName" name="Name" value="@Model.Name" required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="categoryShowOnHomePage" class="form-label">Show On Home Page</label>
+                        <input type="checkbox" class="form-check-input" id="categoryShowOnHomePage" name="ShowOnHomePage" @(Model.ShowOnHomePage ? "checked" : "")>
+                    </div>
+                    <div class="mb-3">
+                        <label for="categoryPublished" class="form-label">Published</label>
+                        <input type="checkbox" class="form-check-input" id="categoryPublished" name="Published" @(Model.Published ? "checked" : "")>
+                    </div>
+                    <div class="mb-3">
+                        <label for="categoryDeleted" class="form-label">Deleted</label>
+                        <input type="checkbox" class="form-check-input" id="categoryDeleted" name="Deleted" @(Model.Deleted ? "checked" : "")>
+                    </div>
+                    <div class="mb-3">
+                        <label for="categoryIncludeInTopMenu" class="form-label">Include In Top Menu</label>
+                        <input type="checkbox" class="form-check-input" id="categoryIncludeInTopMenu" name="IncludeInTopMenu" @(Model.IncludeInTopMenu ? "checked" : "")>
+                    </div>
+                    <input type="hidden" name="Id" value="@Model.Id">
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                <button type="button" class="btn btn-primary" id="saveCategory">Save</button>
+            </div>
+        </div>
+    </div>
+</div>

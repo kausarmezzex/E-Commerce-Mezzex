@@ -1,0 +1,27 @@
+﻿@model IEnumerable<E_Commerce_Mezzex.Models.Domain.Brand>
+
+@{
+    ViewData["Title"] = "Categories";
+}
+
+<h2>Categories</h2>
+
+<table class="table">
+    <thead>
+        <tr>
+            <th>Name</th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var brand in Model)
+        {
+            <tr>
+                <td>@brand.Name</td>
+                <td>
+                    <a asp-action="Details" asp-route-id="@brand.Id">Details</a>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>

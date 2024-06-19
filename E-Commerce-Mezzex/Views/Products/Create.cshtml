@@ -1,0 +1,423 @@
+﻿@model E_Commerce_Mezzex.Models.Domain.Product
+
+@{
+    ViewBag.Title = "Create Product";
+}
+
+<h2>Create Product</h2>
+
+<ul class="nav nav-tabs" id="productTab" role="tablist">
+    <li class="nav-item" role="presentation">
+        <button class="nav-link active" id="product-details-tab" data-bs-toggle="tab" data-bs-target="#product-details" type="button" role="tab" aria-controls="product-details" aria-selected="true">Product Details</button>
+    </li>
+    <li class="nav-item" role="presentation">
+        <button class="nav-link" id="seo-info-tab" data-bs-toggle="tab" data-bs-target="#seo-info" type="button" role="tab" aria-controls="seo-info" aria-selected="false">SEO Information</button>
+    </li>
+    <li class="nav-item" role="presentation">
+        <button class="nav-link" id="multimedia-tab" data-bs-toggle="tab" data-bs-target="#multimedia" type="button" role="tab" aria-controls="multimedia" aria-selected="false">Multimedia</button>
+    </li>
+    <li class="nav-item" role="presentation">
+        <button class="nav-link" id="variants-tab" data-bs-toggle="tab" data-bs-target="#variants" type="button" role="tab" aria-controls="variants" aria-selected="false">Variants</button>
+    </li>
+    <li class="nav-item" role="presentation">
+        <button class="nav-link" id="specifications-tab" data-bs-toggle="tab" data-bs-target="#specifications" type="button" role="tab" aria-controls="specifications" aria-selected="false">Specifications</button>
+    </li>
+    <li class="nav-item" role="presentation">
+        <button class="nav-link" id="related-products-tab" data-bs-toggle="tab" data-bs-target="#related-products" type="button" role="tab" aria-controls="related-products" aria-selected="false">Related Products</button>
+    </li>
+    <li class="nav-item" role="presentation">
+        <button class="nav-link" id="questions-answers-tab" data-bs-toggle="tab" data-bs-target="#questions-answers" type="button" role="tab" aria-controls="questions-answers" aria-selected="false">Questions & Answers</button>
+    </li>
+</ul>
+
+<form id="productForm" asp-action="AddProduct" method="post">
+    <div class="tab-content mt-3" id="productTabContent">
+        <div class="tab-pane fade show active" id="product-details" role="tabpanel" aria-labelledby="product-details-tab">
+            <div class="form-group mb-3 mt-2 d-flex justify-content-end">
+                <input type="submit" value="Add product" class="btn btn-primary btn-lg" />
+            </div>
+            <div class="form-group mb-3">
+                <label asp-for="Name" class="control-label mb-2"></label>
+                <input asp-for="Name" class="form-control" />
+                <span asp-validation-for="Name" class="text-danger"></span>
+            </div>
+            <div class="form-group mb-3">
+                <label asp-for="ShortDescription" class="control-label mb-2"></label>
+                <textarea asp-for="ShortDescription" class="form-control"></textarea>
+                <span asp-validation-for="ShortDescription" class="text-danger"></span>
+            </div>
+            <div class="form-group mb-3">
+                <label asp-for="FullDescription" class="control-label mb-2"></label>
+                <textarea asp-for="FullDescription" id="content" class="form-control"></textarea>
+                <span asp-validation-for="FullDescription" class="text-danger"></span>
+            </div>
+            <div class="form-group mb-3">
+                <label asp-for="DisplayOrder" class="mb-2"></label>
+                <input asp-for="DisplayOrder" class="form-control" />
+                <span asp-validation-for="DisplayOrder" class="text-danger"></span>
+            </div>
+
+            <div class="form-group mb-3">
+                <label asp-for="SKU" class="control-label mb-2"></label>
+                <input asp-for="SKU" class="form-control"></input>
+                <span asp-validation-for="SKU" class="text-danger"></span>
+            </div>
+            <div class="form-group mb-3">
+                <label asp-for="Price" class="control-label mb-2"></label>
+                <input asp-for="Price" class="form-control" />
+                <span asp-validation-for="Price" class="text-danger"></span>
+            </div>
+            <div class="form-group mb-3">
+                <label asp-for="CategoryId" class="control-label mb-2">Category</label>
+                <select asp-for="CategoryId" class="form-control" multiple>
+                    @foreach (var category in ViewBag.Categories)
+                    {
+                        <option value="@category.Value">@category.Text</option>
+                    }
+                </select>
+                <span asp-validation-for="CategoryId" class="text-danger"></span>
+            </div>
+
+            <div class="form-group mb-3">
+                <label asp-for="BrandId" class="control-label mb-2">Brand</label>
+                <select asp-for="BrandId" class="form-control" asp-items="ViewBag.Brands"></select>
+                <span asp-validation-for="BrandId" class="text-danger"></span>
+            </div>
+            <div class="form-group mb-3">
+                <label asp-for="NotReturnable" class="control-label mb-2"></label>
+                <input asp-for="NotReturnable" class="form-check-input" />
+                <span asp-validation-for="NotReturnable" class="text-danger"></span>
+            </div>
+            <div class="form-group mb-3">
+                <label asp-for="IsPublish" class="control-label mb-2"></label>
+                <input asp-for="IsPublish" class="form-check-input" />
+                <span asp-validation-for="IsPublish" class="text-danger"></span>
+            </div>
+            <div class="form-group mb-3">
+                <label asp-for="DisableBuyButton" class="control-label mb-2"></label>
+                <input asp-for="DisableBuyButton" class="form-check-input" />
+                <span asp-validation-for="DisableBuyButton" class="text-danger"></span>
+            </div>
+            <div class="form-group mb-3">
+                <label asp-for="DisableWishlistButton" class="control-label mb-2"></label>
+                <input asp-for="DisableWishlistButton" class="form-check-input" />
+                <span asp-validation-for="DisableWishlistButton" class="text-danger"></span>
+            </div>
+            <div class="form-group mb-3">
+                <label asp-for="ShowOnHomePage" class="control-label mb-2"></label>
+                <input asp-for="ShowOnHomePage" class="form-check-input" />
+                <span asp-validation-for="ShowOnHomePage" class="text-danger"></span>
+            </div>
+            <div class="form-group mb-3">
+                <label asp-for="AllowCustomerReview" class="control-label mb-2"></label>
+                <input asp-for="AllowCustomerReview" class="form-check-input" />
+                <span asp-validation-for="AllowCustomerReview" class="text-danger"></span>
+            </div>
+            <div class="form-group mb-3">
+                <label asp-for="AvailableStartDateTimeUtc" class="control-label mb-2"></label>
+                <input asp-for="AvailableStartDateTimeUtc" class="form-control" />
+                <span asp-validation-for="AvailableStartDateTimeUtc" class="text-danger"></span>
+            </div>
+            <div class="form-group mb-3">
+                <label asp-for="AvailableEndDateTimeUtc" class="control-label mb-2"></label>
+                <input asp-for="AvailableEndDateTimeUtc" class="form-control" />
+                <span asp-validation-for="AvailableEndDateTimeUtc" class="text-danger"></span>
+            </div>
+            <div class="form-group mb-3">
+                <label asp-for="TagNames" class="control-label mb-2">Tags</label>
+                <select class="form-control" multiple="multiple" asp-for="TagNames" id="tagsInput"></select>
+                <span asp-validation-for="TagNames" class="text-danger"></span>
+            </div>
+        </div>
+        <div class="tab-pane fade" id="seo-info" role="tabpanel" aria-labelledby="seo-info-tab">
+            <div class="form-group mb-3">
+                <label asp-for="MetaKeywords" class="control-label mb-2"></label>
+                <input asp-for="MetaKeywords" class="form-control" />
+                <span asp-validation-for="MetaKeywords" class="text-danger"></span>
+            </div>
+            <div class="form-group mb-3">
+                <label asp-for="MetaDescription" class="control-label mb-2"></label>
+                <textarea asp-for="MetaDescription" class="form-control"></textarea>
+                <span asp-validation-for="MetaDescription" class="text-danger"></span>
+            </div>
+            <div class="form-group mb-3">
+                <label asp-for="MetaTitle" class="control-label mb-2"></label>
+                <input asp-for="MetaTitle" class="form-control" />
+                <span asp-validation-for="MetaTitle" class="text-danger"></span>
+            </div>
+        </div>
+        <div class="tab-pane fade" id="multimedia" role="tabpanel" aria-labelledby="multimedia-tab">
+            <!-- Multimedia content will be dynamically added here after product is added -->
+        </div>
+        <div class="tab-pane fade" id="variants" role="tabpanel" aria-labelledby="variants-tab">
+            <div class="form-group mb-3">
+                <label>Variants</label>
+                <table class="table">
+                    <thead>
+                        <tr>
+                            <th>Color</th>
+                            <th>Size</th>
+                            <th>Price</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody id="variantsTableBody">
+                        <!-- Variant rows will be appended here -->
+                    </tbody>
+                </table>
+                <button type="button" id="addVariant" class="btn btn-secondary">Add Variant</button>
+            </div>
+        </div>
+        <div class="tab-pane fade" id="specifications" role="tabpanel" aria-labelledby="specifications-tab">
+            <div class="form-group mb-3">
+                <label>Specifications</label>
+                <table class="table">
+                    <thead>
+                        <tr>
+                            <th>Specification</th>
+                            <th>Value</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody id="specificationsTableBody">
+                        <!-- Specification rows will be appended here -->
+                    </tbody>
+                </table>
+                <button type="button" id="addSpecification" class="btn btn-secondary">Add Specification</button>
+            </div>
+        </div>
+        <div class="tab-pane fade" id="related-products" role="tabpanel" aria-labelledby="related-products-tab">
+            @* <div class="form-group mb-3">
+                <label for="RelatedProductIds">Related Products</label>
+                <select asp-for="RelatedProductIds" class="form-control" asp-items="ViewBag.Products" multiple></select>
+                <span asp-validation-for="RelatedProductIds" class="text-danger"></span>
+            </div> *@
+        </div>
+        <div class="tab-pane fade" id="questions-answers" role="tabpanel" aria-labelledby="questions-answers-tab">
+            <div class="form-group mb-3">
+                <label>Questions & Answers</label>
+                <div id="questionsAnswersSection">
+                    <!-- Q&A form content will be appended here -->
+                </div>
+                <button type="button" id="addQuestionAnswer" class="btn btn-secondary">Add Question & Answer</button>
+            </div>
+        </div>
+    </div>
+</form>
+<div>
+    <a asp-action="Index" class="btn btn-secondary mt-3">Back to List</a>
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+    <script src="~/lib/jquery/dist/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.13/js/select2.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@10"></script>
+    <script>
+        $(document).ready(function () {
+            // Initialize Froala Editor
+            new FroalaEditor('#content', {
+                imageUploadURL: '/api/images',
+                heightMin: 200
+            });
+
+            $('#tagsInput').select2({
+                tags: true,
+                tokenSeparators: [',']
+            });
+
+            $('#CategoryId').select2({
+                placeholder: 'Select Categories',
+                allowClear: true
+            });
+            // Handle form submission
+            $('#productForm').on('submit', function (e) {
+                e.preventDefault();
+                $.ajax({
+                    url: $(this).attr('action'),
+                    type: $(this).attr('method'),
+                    data: $(this).serialize(),
+                    success: function (response) {
+                        if (response.success) {
+                            $('#productForm').append('<input type="hidden" id="productId" value="' + response.productId + '" />');
+                            Swal.fire('Success', 'Product added successfully!', 'success').then(() => {
+                                $('#multimedia').html(`
+                                                    <div class="form-group mb-3">
+                                                        <label>Upload Images</label>
+                                                        <input type="file" id="multipleImageUpload" multiple class="form-control">
+                                                    </div>
+                                                    <div class="form-group mb-3">
+                                                        <table class="table">
+                                                            <thead>
+                                                                <tr>
+                                                                    <th>Image</th>
+                                                                    <th>SEO Filename</th>
+                                                                    <th>Alt Attribute</th>
+                                                                    <th>Title Attribute</th>
+                                                                    <th>URL</th>
+                                                                    <th>Actions</th>
+                                                                </tr>
+                                                            </thead>
+                                                            <tbody id="imageTableBody">
+                                                                <!-- Images will be appended here -->
+                                                            </tbody>
+                                                        </table>
+                                                        <button type="button" id="uploadAllImages" class="btn btn-primary">Save Images</button>
+                                                    </div>
+                                                `);
+                                $('#multimedia-tab').tab('show');
+                            });
+                        }
+                    },
+                    error: function () {
+                        Swal.fire('Error', 'Error adding product.', 'error');
+                    }
+                });
+            });
+
+            // Handle multimedia tab click
+            $('#multimedia-tab').on('click', function (e) {
+                if (!$('#productId').val()) {
+                    e.preventDefault();
+                    Swal.fire('Warning', 'Please add the product first.', 'warning');
+                    $('#product-details-tab').tab('show');
+                }
+            });
+
+            // Handle image upload
+            $(document).on('change', '#multipleImageUpload', function () {
+                let files = this.files;
+                let productId = $('#productId').val();
+                for (let i = 0; i < files.length; i++) {
+                    let data = new FormData();
+                    data.append('file', files[i]);
+                    data.append('productId', productId);
+
+                    let mediaType = files[i].type.startsWith('image') ? 'Image' : (files[i].type.startsWith('video') ? 'Video' : 'Unknown');
+
+                    $.ajax({
+                        url: '/api/images',
+                        type: 'POST',
+                        processData: false,
+                        contentType: false,
+                        data: data,
+                        success: function (result) {
+                            let row = `
+                                                <tr>
+                                                    <td>
+                                                        ${mediaType === 'Image' ? `<img src="${result.link}" style="width: 100px;" />` : `<video width="100" controls><source src="${result.link}" type="${files[i].type}"></video>`}
+                                                    </td>
+                                                    <td><input type="text" class="form-control seo-filename" /></td>
+                                                    <td><input type="text" class="form-control alt-attribute" /></td>
+                                                    <td><input type="text" class="form-control title-attribute" /></td>
+                                                    <td><input type="text" class="form-control media-type" value="${mediaType}" readonly></td>
+                                                    <td><input type="text" value="${result.link}" class="form-control image-url" readonly /></td>
+                                                    <td>
+                                                        <button type="button" class="btn btn-danger btn-sm delete-btn">Delete</button>
+                                                    </td>
+                                                </tr>`;
+                            $('#imageTableBody').append(row);
+                        },
+                        error: function () {
+                            Swal.fire('Error', 'Error uploading image.', 'error');
+                        }
+                    });
+                }
+            });
+
+            // Handle deleting image row
+            $(document).on('click', '.delete-btn', function () {
+                $(this).closest('tr').remove();
+            });
+
+            $(document).on('click', '#uploadAllImages', function () {
+                let imageDetails = [];
+                $('#imageTableBody tr').each(function () {
+                    let seoFilename = $(this).find('.seo-filename').val();
+                    let altAttribute = $(this).find('.alt-attribute').val();
+                    let titleAttribute = $(this).find('.title-attribute').val();
+                    let mediaType = $(this).find('.media-type').val();
+                    let imageUrl = $(this).find('.image-url').val();
+
+                    imageDetails.push({
+                        VirtualPath: imageUrl,
+                        SeoFilename: seoFilename,
+                        AltAttribute: altAttribute,
+                        TitleAttribute: titleAttribute,
+                        MediaType: mediaType, // Ensure this matches the enum values (e.g., "Image" or "Video")
+                        ProductId: $('#productId').val()
+                    });
+                });
+
+                $.ajax({
+                    url: '/api/ImagesDetails',
+                    type: 'POST',
+                    contentType: 'application/json',
+                    data: JSON.stringify(imageDetails),
+                    success: function () {
+                        Swal.fire('Success', 'Images saved successfully.', 'success').then(() => {
+                            window.location.href = '/Products/Index';
+                        });
+                    },
+                    error: function (xhr, status, error) {
+                        console.error(xhr.responseText); // Log the error response for debugging
+                        Swal.fire('Error', 'Error saving images.', 'error');
+                    }
+                });
+            });
+
+            // Additional Product Details
+
+            $('#addVariant').click(function () {
+                $('#variantsTableBody').append(`
+                            <tr>
+                                <td><input type="text" name="Variants[][Color]" class="form-control" /></td>
+                                <td><input type="text" name="Variants[][Size]" class="form-control" /></td>
+                                <td><input type="number" name="Variants[][Price]" class="form-control" /></td>
+                                <td><button type="button" class="btn btn-danger remove-variant">Remove</button></td>
+                            </tr>
+                        `);
+            });
+
+            // Remove variant row
+            $(document).on('click', '.remove-variant', function () {
+                $(this).closest('tr').remove();
+            });
+
+            // Add specification row
+            $('#addSpecification').click(function () {
+                $('#specificationsTableBody').append(`
+                            <tr>
+                                <td><input type="text" name="Specifications[][Key]" class="form-control" /></td>
+                                <td><input type="text" name="Specifications[][Value]" class="form-control" /></td>
+                                <td><button type="button" class="btn btn-danger remove-specification">Remove</button></td>
+                            </tr>
+                        `);
+            });
+
+            // Remove specification row
+            $(document).on('click', '.remove-specification', function () {
+                $(this).closest('tr').remove();
+            });
+
+            // Add question & answer row
+            $('#addQuestionAnswer').click(function () {
+                $('#questionsAnswersSection').append(`
+                            <div class="form-group mb-3">
+                                <label>Question</label>
+                                <input type="text" name="QuestionsAnswers[][Question]" class="form-control" />
+                                <label>Answer</label>
+                                <input type="text" name="QuestionsAnswers[][Answer]" class="form-control" />
+                                <button type="button" class="btn btn-danger remove-question-answer">Remove</button>
+                            </div>
+                        `);
+            });
+
+            // Remove question & answer row
+            $(document).on('click', '.remove-question-answer', function () {
+                $(this).closest('.form-group').remove();
+            });
+        });
+        });
+    </script>
+}

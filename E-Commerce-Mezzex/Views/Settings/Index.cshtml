@@ -1,0 +1,240 @@
+﻿@model E_Commerce_Mezzex.Models.ViewModel.SettingsViewModel
+
+@{
+    ViewData["Title"] = "Settings";
+}
+
+<h1 class="text-center mb-5 mt-2">Settings Page For Category Brand And Product</h1>
+
+<div class="container-wide">
+    <!-- Category Settings Section -->
+    <div class="form-group section category-section">
+        <h3 class="section-title">Category Settings</h3>
+        <table class="table table-striped">
+            <thead>
+                <tr>
+                    <th>Name</th>
+                    <th>Show On Home Page</th>
+                    <th>Published</th>
+                    <th>Deleted</th>
+                    <th>Include In Top Menu</th>
+                    <th class="text-right">Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                @for (int i = 0; i < Model.Categories.Count; i++)
+                {
+                    <tr id="categoryRow-@i">
+                        <td><span class="value">@Model.Categories[i].Name</span></td>
+                        <td><span class="value">@Model.Categories[i].ShowOnHomePage</span></td>
+                        <td><span class="value">@Model.Categories[i].Published</span></td>
+                        <td><span class="value">@Model.Categories[i].Deleted</span></td>
+                        <td><span class="value">@Model.Categories[i].IncludeInTopMenu</span></td>
+                        <td class="d-flex justify-content-end">
+                            <button type="button" class="btn btn-secondary edit-btn" data-type="category" data-id="@Model.Categories[i].Id">Edit</button>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+
+    <!-- Brand Settings Section -->
+    <div class="form-group section brand-section">
+        <h3 class="section-title">Brand Settings</h3>
+        <table class="table table-striped">
+            <thead>
+                <tr>
+                    <th>Name</th>
+                    <th>Show On Home Page</th>
+                    <th>Published</th>
+                    <th>Deleted</th>
+                    <th class="text-right">Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                @for (int i = 0; i < Model.Brands.Count; i++)
+                {
+                    <tr id="brandRow-@i">
+                        <td><span class="value">@Model.Brands[i].Name</span></td>
+                        <td><span class="value">@Model.Brands[i].ShowOnHomePage</span></td>
+                        <td><span class="value">@Model.Brands[i].Published</span></td>
+                        <td><span class="value">@Model.Brands[i].Deleted</span></td>
+                        <td class="d-flex justify-content-end">
+                            <button type="button" class="btn btn-secondary edit-btn" data-type="brand" data-id="@Model.Brands[i].Id">Edit</button>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+
+    <!-- Product Settings Section -->
+    <div class="form-group section product-section">
+        <h3 class="section-title">Product Settings</h3>
+        <table class="table table-striped">
+            <thead>
+                <tr>
+                    <th>Name</th>
+                    <th>Not Returnable</th>
+                    <th>Disable Buy Button</th>
+                    <th>Show On Home Page</th>
+                    <th>Allow Customer Review</th>
+                    <th>Disable Wishlist Button</th>
+                    <th>IsPublish</th>
+                    <th class="text-right">Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                @for (int i = 0; i < Model.Products.Count; i++)
+                {
+                    <tr id="productRow-@i">
+                        <td><span class="value">@Model.Products[i].Name</span></td>
+                        <td><span class="value">@Model.Products[i].NotReturnable</span></td>
+                        <td><span class="value">@Model.Products[i].DisableBuyButton</span></td>
+                        <td><span class="value">@Model.Products[i].ShowOnHomePage</span></td>
+                        <td><span class="value">@Model.Products[i].AllowCustomerReview</span></td>
+                        <td><span class="value">@Model.Products[i].DisableWishlistButton</span></td>
+                        <td><span class="value">@Model.Products[i].IsPublish</span></td>
+                        <td class="d-flex justify-content-end">
+                            <button type="button" class="btn btn-secondary edit-btn" data-type="product" data-id="@Model.Products[i].Id">Edit</button>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+
+    <!-- Placeholder for partial views -->
+    <div id="editModalContainer"></div>
+</div>
+
+@section Scripts {
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script>
+        document.querySelectorAll('.edit-btn').forEach(button => {
+            button.addEventListener('click', async function () {
+                const type = this.getAttribute('data-type');
+                const id = this.getAttribute('data-id');
+                const response = await fetch(`/Settings/Edit${type.charAt(0).toUpperCase() + type.slice(1)}?id=${id}`);
+                if (response.ok) {
+                    const modalContainer = document.getElementById('editModalContainer');
+                    modalContainer.innerHTML = await response.text();
+                    const modal = new bootstrap.Modal(modalContainer.querySelector('.modal'));
+                    modal.show();
+
+                    document.getElementById(`save${type.charAt(0).toUpperCase() + type.slice(1)}`).addEventListener('click', async () => {
+                        const form = document.getElementById(`edit${type.charAt(0).toUpperCase() + type.slice(1)}Form`);
+                        const formData = new FormData(form);
+                        const jsonData = Object.fromEntries(formData.entries());
+
+                        // Convert boolean checkbox values to correct boolean types
+                        for (let key in jsonData) {
+                            if (jsonData[key] === "on") {
+                                jsonData[key] = true;
+                            } else if (jsonData[key] === "") {
+                                jsonData[key] = false;
+                            }
+                        }
+
+                        const saveResponse = await fetch(`/Settings/Save${type.charAt(0).toUpperCase() + type.slice(1)}`, {
+                            method: 'POST',
+                            headers: {
+                                'Content-Type': 'application/json'
+                            },
+                            body: JSON.stringify(jsonData)
+                        });
+
+                        if (saveResponse.ok) {
+                            Swal.fire({
+                                title: 'Success',
+                                text: 'Saved successfully.',
+                                icon: 'success',
+                                timer: 5000,
+                                timerProgressBar: true,
+                                showConfirmButton: false
+                            }).then(() => {
+                                modal.hide();
+                                location.reload();
+                            });
+                        } else {
+                            Swal.fire({
+                                title: 'Error',
+                                text: 'Failed to save.',
+                                icon: 'error',
+                                showConfirmButton: true
+                            });
+                        }
+                    });
+                } else {
+                    Swal.fire({
+                        title: 'Error',
+                        text: 'Failed to fetch data.',
+                        icon: 'error',
+                        showConfirmButton: true
+                    });
+                }
+            });
+        });
+    </script>
+}
+
+<style>
+    /* Style for all sections */
+    .section {
+        background-color: #f8f9fa; /* Light gray background */
+        border: 1px solid #ced4da; /* Gray border */
+        border-radius: 5px; /* Rounded corners */
+        padding: 20px; /* Add some padding */
+        margin-bottom: 20px; /* Add some margin */
+    }
+
+    /* Different background colors for different sections */
+    .brand-section {
+        background-color: #e9ecef; /* Lighter gray background */
+    }
+
+    .product-section {
+        background-color: #ffffff; /* White background */
+    }
+
+    /* Style for table headers */
+    .table thead th {
+        background-color: #343a40; /* Dark background for headers */
+        color: #ffffff; /* White text for headers */
+        border: 1px solid #dee2e6; /* Border for header cells */
+    }
+
+    /* Style for table rows */
+    .table tbody tr:nth-child(odd) {
+        background-color: #f8f9fa; /* Light gray background for odd rows */
+    }
+
+    .table tbody tr:nth-child(even) {
+        background-color: #ffffff; /* White background for even rows */
+    }
+
+    /* Style for buttons */
+    .btn {
+        margin-left: 5px; /* Space between buttons */
+    }
+
+    .btn-secondary {
+        background-color: #6c757d; /* Bootstrap secondary button color */
+        border-color: #6c757d;
+    }
+
+        .btn-secondary:hover {
+            background-color: #5a6268; /* Darker shade on hover */
+            border-color: #545b62;
+        }
+
+    .text-right {
+        text-align: right;
+    }
+
+    /* Increase container width */
+    .container-wide {
+        max-width: 100%; /* Increase the max-width */
+    }
+</style>

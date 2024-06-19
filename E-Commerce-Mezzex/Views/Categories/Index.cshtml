@@ -1,0 +1,36 @@
+﻿@model IEnumerable<E_Commerce_Mezzex.Models.Domain.Category>
+
+@{
+    ViewData["Title"] = "Categories";
+}
+
+<h2>Categories</h2>
+
+<table class="table">
+    <thead>
+        <tr>
+            <th>Name</th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var category in Model.Where(c => c.ParentCategoryId == null))
+        {
+            <tr>
+                <td>@category.Name</td>
+                <td>
+                    <a asp-action="Details" asp-route-id="@category.Id">Details</a>
+                </td>
+            </tr>
+            @foreach (var subCategory in category.SubCategories)
+            {
+                <tr>
+                    <td>&nbsp;&nbsp;&nbsp;&nbsp;@category.Name >> @subCategory.Name</td>
+                    <td>
+                        <a asp-action="Details" asp-route-id="@subCategory.Id">Details</a>
+                    </td>
+                </tr>
+            }
+        }
+    </tbody>
+</table>

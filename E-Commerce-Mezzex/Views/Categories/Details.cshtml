@@ -1,0 +1,21 @@
+﻿@model E_Commerce_Mezzex.Models.Domain.Category
+
+@{
+    ViewData["Title"] = "Category Details";
+}
+
+<h2>@Model.Name</h2>
+<p>@Model.MetaDescription</p>
+
+@if (Model.SubCategories != null && Model.SubCategories.Any())
+{
+    <h3>Subcategories</h3>
+    <ul>
+        @foreach (var subCategory in Model.SubCategories)
+        {
+            <li>@Model.Name >> @subCategory.Name</li>
+        }
+    </ul>
+}
+
+<a asp-action="Index">Back to List</a>

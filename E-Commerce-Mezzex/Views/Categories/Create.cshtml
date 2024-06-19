@@ -1,0 +1,102 @@
+﻿@model E_Commerce_Mezzex.Models.Domain.Category
+
+@{
+    ViewData["Title"] = "Add New Category";
+}
+
+<h2>Add New Category</h2>
+
+<form asp-action="AddCategory" method="post" enctype="multipart/form-data">
+    <div class="form-group mb-3">
+        <label asp-for="Name" class="mb-2">Name</label>
+        <input asp-for="Name" class="form-control" />
+        <span asp-validation-for="Name" class="text-danger"></span>
+    </div>
+    <div class="form-group mb-3">
+        <label asp-for="Description" class="control-labelform-label mb-2"></label>
+        <textarea asp-for="Description" id="content" class="form-control"></textarea>
+        <span asp-validation-for="Description" class="text-danger"></span>
+    </div>
+    <div class="form-group mb-3">
+        <label asp-for="ParentCategoryId" class="mb-2">Parent Category</label>
+        <select asp-for="ParentCategoryId" class="form-control">
+            <option value="">[None]</option>
+            @foreach (var category in ViewBag.Categories)
+            {
+                <option value="@category.Value">@category.Text</option>
+            }
+        </select>
+        <span asp-validation-for="ParentCategoryId" class="text-danger"></span>
+    </div>
+    <div class="form-group form-check mb-3">
+        <input asp-for="ShowOnHomePage" type="checkbox" class="form-check-input" id="ShowOnHomePage" />
+        <label class="form-check-label" for="ShowOnHomePage">Show On Home Page</label>
+    </div>
+    <div class="form-group form-check mb-3">
+        <input asp-for="IncludInTopMenu" type="checkbox" class="form-check-input" id="IncludInTopMenu" />
+        <label class="form-check-label" for="IncludInTopMenu">Include In Top Menu</label>
+    </div>
+    <div class="form-group mb-3">
+        <label asp-for="DisplayOrder" class="mb-2">Display Order</label>
+        <input asp-for="DisplayOrder" class="form-control" />
+        <span asp-validation-for="DisplayOrder" class="text-danger"></span>
+    </div>
+    <div class="mb-3">
+        <label class="mb-2">Featured Image Upload</label>
+        <input type="file" id="featuredImageUpload" class="form-control" />
+        <img class="mt-2 mb-2" id="featuredImageDisplay" style="display:none;width:300px;" />
+        <input type="hidden" asp-for="ImageUrl" id="featuredImageUrl" />
+    </div>
+    <div class="form-group form-check mb-3">
+        <input asp-for="Published" type="checkbox" class="form-check-input" id="Published" />
+        <label class="form-check-label" for="Published">Published</label>
+    </div>
+    <div class="form-group mb-3">
+        <label asp-for="MetaKeywords" class="mb-2">Meta Keywords</label>
+        <input asp-for="MetaKeywords" class="form-control" />
+        <span asp-validation-for="MetaKeywords" class="text-danger"></span>
+    </div>
+    <div class="form-group mb-3">
+        <label asp-for="MetaDescription" class="mb-2">Meta Description</label>
+        <textarea asp-for="MetaDescription" class="form-control"></textarea>
+        <span asp-validation-for="MetaDescription" class="text-danger"></span>
+    </div>
+    <div class="form-group mb-3">
+        <label asp-for="MetaTitle" class="mb-2">Meta Title</label>
+        <input asp-for="MetaTitle" class="form-control" />
+        <span asp-validation-for="MetaTitle" class="text-danger"></span>
+    </div>
+    <button type="submit" class="btn btn-primary mb-3 mt-2">Add Category</button>
+</form>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+
+    <script>
+        // Initialize Froala Editor
+        var editor = new FroalaEditor('#content', {
+            imageUploadURL: '/api/images',
+            heightMin: 200
+        });
+
+        // Featured Image Upload
+        const featuredUploadElement = document.getElementById('featuredImageUpload');
+        const featuredImageUrlElement = document.getElementById('featuredImageUrl');
+        const featuredImageDisplayElement = document.getElementById('featuredImageDisplay');
+
+        featuredUploadElement.addEventListener('change', async function (e) {
+            let data = new FormData();
+            data.append('file', e.target.files[0]);
+
+            let response = await fetch('/api/images', {
+                method: 'POST',
+                body: data
+            });
+
+            let result = await response.json();
+            featuredImageUrlElement.value = result.link;
+            featuredImageDisplayElement.src = result.link;
+            featuredImageDisplayElement.style.display = 'block';
+        });
+    </script>
+}
