@@ -41,12 +41,13 @@
         <input asp-for="DisplayOrder" class="form-control" />
         <span asp-validation-for="DisplayOrder" class="text-danger"></span>
     </div>
-    <div class="mb-3">
-        <label class="mb-2">Featured Image Upload</label>
-        <input type="file" id="featuredImageUpload" class="form-control" />
-        <img class="mt-2 mb-2" id="featuredImageDisplay" style="display:none;width:300px;" />
+    <div class="form-group">
+        <label for="featuredImageUpload">Featured Image Upload</label>
+        <input type="file" id="featuredImageUpload" class="form-control-file" />
+        <img class="mt-2 mb-2 img-fluid" id="featuredImageDisplay" style="display:none;width:300px;" />
         <input type="hidden" asp-for="ImageUrl" id="featuredImageUrl" />
     </div>
+
     <div class="form-group form-check mb-3">
         <input asp-for="Published" type="checkbox" class="form-check-input" id="Published" />
         <label class="form-check-label" for="Published">Published</label>

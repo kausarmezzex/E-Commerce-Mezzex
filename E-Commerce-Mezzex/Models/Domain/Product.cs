@@ -1,4 +1,5 @@
-﻿using System;
+﻿using CloudinaryDotNet.Actions;
+using System;
 using System.Collections.Generic;
 
 namespace E_Commerce_Mezzex.Models.Domain
@@ -13,6 +14,7 @@ namespace E_Commerce_Mezzex.Models.Domain
         public string SKU { get; set; }
         public List<int> CategoryId { get; set; } = new List<int>(); // Multiple Category IDs
         public ICollection<Category> Categories { get; set; } = new List<Category>();
+        public List<int>? RelatedProductId { get; set; }
         public int BrandId { get; set; }
         public ICollection<Brand> Brands { get; set; } = new List<Brand>();
         public bool NotReturnable { get; set; }
@@ -31,13 +33,10 @@ namespace E_Commerce_Mezzex.Models.Domain
         public int DisplayOrder { get; set; }
 
         // New properties
-        public List<ProductVariant> Variants { get; set; } = new List<ProductVariant>();
-        public ICollection<CustomerReview> CustomerReviews { get; set; } = new List<CustomerReview>();
-        public ProductSpecification Specifications { get; set; }
-        public ICollection<RelatedProduct> RelatedProducts { get; set; } = new List<RelatedProduct>();
-        public ICollection<QuestionAnswer> QuestionsAnswers { get; set; } = new List<QuestionAnswer>();
-        public decimal? DiscountPrice { get; set; }
-        public string ShippingInformation { get; set; }
-        public string WarrantyInformation { get; set; }
+        public ICollection<CustomerReview> ? CustomerReviews { get; set; } = new List<CustomerReview>();
+        public ICollection<ProductVariant> Variants { get; set; } = new List<ProductVariant>();
+        public ProductSpecification ? Specifications { get; set; }
+        public ICollection<RelatedProduct>? RelatedProducts { get; set; } = new List<RelatedProduct>();
+        public ICollection<QuestionAnswer>? QuestionsAnswers { get; set; } = new List<QuestionAnswer>();
     }
 }

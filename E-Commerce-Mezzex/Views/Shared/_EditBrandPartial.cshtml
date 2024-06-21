@@ -1,33 +1,41 @@
-﻿<div class="modal fade" id="editBrandModal" tabindex="-1" aria-labelledby="editBrandModalLabel" aria-hidden="true">
-    <div class="modal-dialog">
+﻿<div class="modal fade" id="editBrandModal" tabindex="-1" role="dialog" aria-labelledby="editBrandModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
         <div class="modal-content">
             <div class="modal-header">
                 <h5 class="modal-title" id="editBrandModalLabel">Edit Brand</h5>
-                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
             </div>
             <div class="modal-body">
                 <form id="editBrandForm">
-                    <div class="mb-3">
+                    <div class="form-group mb-3">
                         <label for="brandName" class="form-label">Name</label>
                         <input type="text" class="form-control" id="brandName" name="Name" value="@Model.Name" required>
                     </div>
-                    <div class="mb-3">
-                        <label for="brandShowOnHomePage" class="form-label">Show On Home Page</label>
-                        <input type="checkbox" class="form-check-input" id="brandShowOnHomePage" name="ShowOnHomePage" @(Model.ShowOnHomePage ? "checked" : "")>
+                    <div class="form-group mb-3">
+                        <div class="custom-control custom-checkbox">
+                            <input type="checkbox" class="custom-control-input" id="brandShowOnHomePage" name="ShowOnHomePage" @(Model.ShowOnHomePage ? "checked" : "")>
+                            <label class="custom-control-label" for="brandShowOnHomePage">Show On Home Page</label>
+                        </div>
                     </div>
-                    <div class="mb-3">
-                        <label for="brandPublished" class="form-label">Published</label>
-                        <input type="checkbox" class="form-check-input" id="brandPublished" name="Published" @(Model.Published ? "checked" : "")>
+                    <div class="form-group mb-3">
+                        <div class="custom-control custom-checkbox">
+                            <input type="checkbox" class="custom-control-input" id="brandPublished" name="Published" @(Model.Published ? "checked" : "")>
+                            <label class="custom-control-label" for="brandPublished">Published</label>
+                        </div>
                     </div>
-                    <div class="mb-3">
-                        <label for="brandDeleted" class="form-label">Deleted</label>
-                        <input type="checkbox" class="form-check-input" id="brandDeleted" name="Deleted" @(Model.Deleted ? "checked" : "")>
+                    <div class="form-group mb-3">
+                        <div class="custom-control custom-checkbox">
+                            <input type="checkbox" class="custom-control-input" id="brandDeleted" name="Deleted" @(Model.Deleted ? "checked" : "")>
+                            <label class="custom-control-label" for="brandDeleted">Deleted</label>
+                        </div>
                     </div>
                     <input type="hidden" name="Id" value="@Model.Id">
                 </form>
             </div>
             <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
                 <button type="button" class="btn btn-primary" id="saveBrand">Save</button>
             </div>
         </div>

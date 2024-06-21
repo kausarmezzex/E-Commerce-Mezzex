@@ -10,7 +10,9 @@
     {
         public int Id { get; set; }
         public string VirtualPath { get; set; }
-        public int ProductId { get; set; }
+        public int ProductId { get; set; }  // Made nullable to accommodate both Product and ProductVariant
+        public int? ProductVariantId { get; set; }
+        public ProductVariant ProductVariant { get; set; }
         public string SeoFilename { get; set; }
         public string AltAttribute { get; set; }
         public string TitleAttribute { get; set; }

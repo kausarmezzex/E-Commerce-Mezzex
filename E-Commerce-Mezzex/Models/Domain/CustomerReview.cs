@@ -7,5 +7,6 @@
         public string ReviewText { get; set; }
         public int Rating { get; set; } // 1 to 5
         public DateTime ReviewDate { get; set; }
+        public int ProductId { get; set; } // Foreign key to Product
     }
 }

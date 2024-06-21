@@ -1,5 +1,6 @@
 ﻿using E_Commerce_Mezzex.Models.Domain;
 using E_Commerce_Mezzex.Models.ViewModels;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using System.Threading.Tasks;
@@ -14,13 +15,14 @@ namespace E_Commerce_Mezzex.Controllers
         {
             _signInManager = signInManager;
         }
-
+        [AllowAnonymous]
         public IActionResult Index()
         {
             return View();
         }
 
         [HttpPost]
+        [AllowAnonymous]
         public async Task<IActionResult> Index(LoginViewModel model)
         {
             if (ModelState.IsValid)

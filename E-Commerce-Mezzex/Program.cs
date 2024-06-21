@@ -30,8 +30,8 @@ builder.Services.ConfigureApplicationCookie(options =>
     options.Cookie.SameSite = SameSiteMode.Strict;
     options.ExpireTimeSpan = TimeSpan.FromMinutes(60);
     options.SlidingExpiration = true;
-    options.LoginPath = "/Login/Login";
-    options.LogoutPath = "/Account/Logout";
+    options.LoginPath = "/Login/Index"; // Update with your login path
+    options.LogoutPath = "/Login/Logout";
     options.AccessDeniedPath = "/Account/AccessDenied";
     options.Cookie.Name = ".ECommerceMezzex.Auth";
 });
@@ -117,6 +117,7 @@ app.MapControllerRoute(
     name: "default",
     pattern: "{controller=Home}/{action=Index}/{id?}");
 
+// Configure endpoint routing for admin
 app.MapControllerRoute(
     name: "admin",
     pattern: "Admin/{controller=Admin}/{action=Index}/{id?}");

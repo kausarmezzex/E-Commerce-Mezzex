@@ -2,11 +2,16 @@
 {
     public class RelatedProduct
     {
-        public int ProductId { get; set; }
-        public Product Product { get; set; }
+        public int Id { get; set; } // Unique identifier for this relationship
+        public int MainProductId { get; set; } // ID of the main product
+        public int RelatedProductId { get; set; } // ID of the related product
+        public string RelatedProductName { get; set; }
+        public bool RelatedIsPublish {  get; set; }
+        public decimal RelatedProductPrice { get; set; }
 
-        public int RelatedProductId { get; set; }
-        public Product Related { get; set; }
+        // Navigation properties
+        public Product MainProduct { get; set; } // Navigation property to the main product
+        public Product RelatedProductDetails { get; set; } // Navigation property to the related product
     }
 
 }

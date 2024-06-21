@@ -28,11 +28,13 @@
         <span asp-validation-for="DisplayOrder" class="text-danger"></span>
     </div>
 
-    <div class="mb-3">
-        <label class="form-label mb-2">Featured Image Upload</label>
-        <input type="file" id="featuredImageUpload" class="form-control" />
-        <img class="mb-2 mt-2" src="" id="featuredImageDisplay" style="display:none;width: 300px;" />
+    <div class="form-group mb-3">
+        <label for="featuredImageUpload" class="form-label mb-2">Featured Image Upload</label>
+        <input type="file" id="featuredImageUpload" class="form-control-file" />
+        <img class="mt-2 mb-2 img-fluid" id="featuredImageDisplay" style="display:none;width: 300px;" />
+        <input type="hidden" asp-for="ImageUrl" id="featuredImageUrl" />
     </div>
+
 
     <div class="mb-3">
         <label class="form-label mb-2">Featured Image URL</label>

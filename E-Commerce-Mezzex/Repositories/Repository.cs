@@ -50,8 +50,20 @@ namespace E_Commerce_Mezzex.Repositories
 
         public async Task UpdateAsync(T entity)
         {
-            _context.Entry(entity).State = EntityState.Modified;
-            await _context.SaveChangesAsync();
+            try
+            {
+                _context.Entry(entity).State = EntityState.Modified;
+                await _context.SaveChangesAsync();
+            }catch (DbUpdateException ex)
+            {
+                Console.WriteLine($"An error occurred while saving the entity changes: {ex.Message}");
+                if(ex.InnerException != null)
+                {
+                    Console.WriteLine($"Inner exception message: {ex.InnerException.Message}");
+                }
+                throw;
+            }
+           
         }
 
         public async Task DeleteAsync(int id)

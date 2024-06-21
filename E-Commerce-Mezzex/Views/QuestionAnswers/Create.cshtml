@@ -1,0 +1,112 @@
+﻿@model E_Commerce_Mezzex.Models.Domain.QuestionAnswer
+
+@{
+    ViewData["Title"] = "Create";
+}
+
+<h1>Create</h1>
+
+<h4>Question and Answer</h4>
+<hr />
+<div class="row">
+    <div class="col-md-8">
+        <form asp-action="Create" id="createForm">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+
+            <div id="questionAnswersContainer">
+                <div class="question-answer-set">
+                    <div class="form-group">
+                        <label class="control-label">Question</label>
+                        <input type="text" name="Questions" class="form-control question" required />
+                        <span class="text-danger"></span>
+                    </div>
+                    <div class="form-group">
+                        <label class="control-label">Answer</label>
+                        <input type="text" name="Answers" class="form-control answer" required />
+                        <span class="text-danger"></span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <input type="button" id="addQuestionAnswer" value="Add Question and Answer" class="btn btn-primary" />
+            </div>
+
+            <div class="form-group">
+                <label asp-for="QuestionDate" class="control-label"></label>
+                <input asp-for="QuestionDate" class="form-control" />
+                <span asp-validation-for="QuestionDate" class="text-danger"></span>
+            </div>
+
+            <div class="form-group">
+                <label asp-for="ProductId" class="control-label"></label>
+                <select asp-for="ProductId" class="form-control" asp-items="ViewBag.ProductId"></select>
+                <span asp-validation-for="ProductId" class="text-danger"></span>
+            </div>
+
+            <div class="form-group">
+                <input type="submit" value="Create" class="btn btn-primary" />
+            </div>
+        </form>
+    </div>
+</div>
+
+<div>
+    <a asp-action="Index">Back to List</a>
+</div>
+
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+
+    <script>
+        $(document).ready(function () {
+            var index = 1;
+
+            // Add question and answer dynamically
+            $('#addQuestionAnswer').click(function () {
+                index++;
+                var questionAnswerSet = `
+                            <div class="question-answer-set">
+                                <div class="form-group">
+                                    <label class="control-label">Question</label>
+                                    <input type="text" name="Questions" class="form-control question" required />
+                                    <span class="text-danger"></span>
+                                </div>
+                                <div class="form-group">
+                                    <label class="control-label">Answer</label>
+                                    <input type="text" name="Answers" class="form-control answer" required />
+                                    <span class="text-danger"></span>
+                                </div>
+                            </div>`;
+
+                $('#questionAnswersContainer').append(questionAnswerSet);
+            });
+
+            // Form submission
+            $('#createForm').submit(function () {
+                var questions = [];
+                var answers = [];
+
+                $('.question').each(function () {
+                    questions.push($(this).val());
+                });
+
+                $('.answer').each(function () {
+                    answers.push($(this).val());
+                });
+
+                // Add questions and answers as JSON to form data
+                var formData = $(this).serializeArray();
+                formData.push({ name: 'Questions', value: JSON.stringify(questions) });
+                formData.push({ name: 'Answers', value: JSON.stringify(answers) });
+
+                // Set serialized data to form
+                $(this).serializeArray = formData;
+
+                return true;
+            });
+        });
+    </script>
+}

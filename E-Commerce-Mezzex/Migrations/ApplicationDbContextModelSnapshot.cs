@@ -298,7 +298,7 @@ namespace E_Commerce_Mezzex.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<int?>("ProductId")
+                    b.Property<int>("ProductId")
                         .HasColumnType("int");
 
                     b.Property<int>("Rating")
@@ -315,7 +315,7 @@ namespace E_Commerce_Mezzex.Migrations
 
                     b.HasIndex("ProductId");
 
-                    b.ToTable("CustomerReview");
+                    b.ToTable("CustomerReviews");
                 });
 
             modelBuilder.Entity("E_Commerce_Mezzex.Models.Domain.Permission", b =>
@@ -409,9 +409,6 @@ namespace E_Commerce_Mezzex.Migrations
                     b.Property<bool>("DisableWishlistButton")
                         .HasColumnType("bit");
 
-                    b.Property<decimal?>("DiscountPrice")
-                        .HasColumnType("decimal(18,2)");
-
                     b.Property<int>("DisplayOrder")
                         .HasColumnType("int");
 
@@ -444,11 +441,10 @@ namespace E_Commerce_Mezzex.Migrations
                     b.Property<decimal>("Price")
                         .HasColumnType("decimal(18,2)");
 
-                    b.Property<string>("SKU")
-                        .IsRequired()
+                    b.Property<string>("RelatedProductId")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("ShippingInformation")
+                    b.Property<string>("SKU")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
@@ -459,41 +455,33 @@ namespace E_Commerce_Mezzex.Migrations
                     b.Property<bool>("ShowOnHomePage")
                         .HasColumnType("bit");
 
-                    b.Property<Guid>("SpecificationsId")
-                        .HasColumnType("uniqueidentifier");
-
                     b.Property<string>("TagNames")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("WarrantyInformation")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
                     b.HasKey("Id");
-
-                    b.HasIndex("SpecificationsId");
 
                     b.ToTable("Products");
                 });
 
             modelBuilder.Entity("E_Commerce_Mezzex.Models.Domain.ProductSpecification", b =>
                 {
-                    b.Property<Guid>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("uniqueidentifier");
-
                     b.Property<string>("Key")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<int>("ProductId")
+                        .HasColumnType("int");
 
                     b.Property<string>("Value")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.HasKey("Id");
+                    b.HasKey("Key");
 
-                    b.ToTable("ProductSpecification");
+                    b.HasIndex("ProductId")
+                        .IsUnique();
+
+                    b.ToTable("ProductSpecifications");
                 });
 
             modelBuilder.Entity("E_Commerce_Mezzex.Models.Domain.ProductVariant", b =>
@@ -504,17 +492,17 @@ namespace E_Commerce_Mezzex.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
-                    b.Property<string>("Color")
+                    b.Property<decimal?>("Price")
+                        .HasColumnType("decimal(18,2)");
+
+                    b.Property<int>("ProductId")
+                        .HasColumnType("int");
+
+                    b.Property<string>("VariantName")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<decimal>("Price")
-                        .HasColumnType("decimal(18,2)");
-
-                    b.Property<int?>("ProductId")
-                        .HasColumnType("int");
-
-                    b.Property<string>("Size")
+                    b.Property<string>("VariantValue")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
@@ -522,7 +510,7 @@ namespace E_Commerce_Mezzex.Migrations
 
                     b.HasIndex("ProductId");
 
-                    b.ToTable("ProductVariant");
+                    b.ToTable("ProductVariants");
                 });
 
             modelBuilder.Entity("E_Commerce_Mezzex.Models.Domain.QuestionAnswer", b =>
@@ -537,10 +525,10 @@ namespace E_Commerce_Mezzex.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<DateTime>("AnswerDate")
-                        .HasColumnType("datetime2");
+                    b.Property<int>("ProductId")
+                        .HasColumnType("int");
 
-                    b.Property<int?>("ProductId")
+                    b.Property<int?>("ProductId1")
                         .HasColumnType("int");
 
                     b.Property<string>("Question")
@@ -554,30 +542,39 @@ namespace E_Commerce_Mezzex.Migrations
 
                     b.HasIndex("ProductId");
 
-                    b.ToTable("QuestionAnswer");
+                    b.HasIndex("ProductId1");
+
+                    b.ToTable("QuestionsAnswers");
                 });
 
             modelBuilder.Entity("E_Commerce_Mezzex.Models.Domain.RelatedProduct", b =>
                 {
-                    b.Property<int>("RelatedProductId")
+                    b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int");
 
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("RelatedProductId"));
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
-                    b.Property<int>("ProductId")
+                    b.Property<int>("MainProductId")
                         .HasColumnType("int");
 
-                    b.Property<int>("RelatedId")
+                    b.Property<int>("RelatedProductId")
                         .HasColumnType("int");
 
-                    b.HasKey("RelatedProductId");
+                    b.Property<string>("RelatedProductName")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
 
-                    b.HasIndex("ProductId");
+                    b.Property<decimal>("RelatedProductPrice")
+                        .HasColumnType("decimal(18,2)");
 
-                    b.HasIndex("RelatedId");
+                    b.HasKey("Id");
 
-                    b.ToTable("RelatedProduct");
+                    b.HasIndex("MainProductId");
+
+                    b.HasIndex("RelatedProductId");
+
+                    b.ToTable("RelatedProducts");
                 });
 
             modelBuilder.Entity("E_Commerce_Mezzex.Models.Domain.RolePermission", b =>
@@ -764,7 +761,9 @@ namespace E_Commerce_Mezzex.Migrations
                 {
                     b.HasOne("E_Commerce_Mezzex.Models.Domain.Product", null)
                         .WithMany("CustomerReviews")
-                        .HasForeignKey("ProductId");
+                        .HasForeignKey("ProductId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
                 });
 
             modelBuilder.Entity("E_Commerce_Mezzex.Models.Domain.Picture", b =>
@@ -772,58 +771,71 @@ namespace E_Commerce_Mezzex.Migrations
                     b.HasOne("E_Commerce_Mezzex.Models.Domain.Product", "Product")
                         .WithMany("Images")
                         .HasForeignKey("ProductId")
-                        .OnDelete(DeleteBehavior.Cascade)
+                        .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
-                    b.HasOne("E_Commerce_Mezzex.Models.Domain.ProductVariant", null)
+                    b.HasOne("E_Commerce_Mezzex.Models.Domain.ProductVariant", "ProductVariant")
                         .WithMany("Images")
-                        .HasForeignKey("ProductVariantId");
+                        .HasForeignKey("ProductVariantId")
+                        .OnDelete(DeleteBehavior.Restrict);
 
                     b.Navigation("Product");
+
+                    b.Navigation("ProductVariant");
                 });
 
-            modelBuilder.Entity("E_Commerce_Mezzex.Models.Domain.Product", b =>
+            modelBuilder.Entity("E_Commerce_Mezzex.Models.Domain.ProductSpecification", b =>
                 {
-                    b.HasOne("E_Commerce_Mezzex.Models.Domain.ProductSpecification", "Specifications")
-                        .WithMany()
-                        .HasForeignKey("SpecificationsId")
+                    b.HasOne("E_Commerce_Mezzex.Models.Domain.Product", null)
+                        .WithOne("Specifications")
+                        .HasForeignKey("E_Commerce_Mezzex.Models.Domain.ProductSpecification", "ProductId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
-
-                    b.Navigation("Specifications");
                 });
 
             modelBuilder.Entity("E_Commerce_Mezzex.Models.Domain.ProductVariant", b =>
                 {
-                    b.HasOne("E_Commerce_Mezzex.Models.Domain.Product", null)
+                    b.HasOne("E_Commerce_Mezzex.Models.Domain.Product", "Product")
                         .WithMany("Variants")
-                        .HasForeignKey("ProductId");
+                        .HasForeignKey("ProductId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.Navigation("Product");
                 });
 
             modelBuilder.Entity("E_Commerce_Mezzex.Models.Domain.QuestionAnswer", b =>
                 {
                     b.HasOne("E_Commerce_Mezzex.Models.Domain.Product", null)
                         .WithMany("QuestionsAnswers")
-                        .HasForeignKey("ProductId");
+                        .HasForeignKey("ProductId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("E_Commerce_Mezzex.Models.Domain.Product", "Product")
+                        .WithMany()
+                        .HasForeignKey("ProductId1");
+
+                    b.Navigation("Product");
                 });
 
             modelBuilder.Entity("E_Commerce_Mezzex.Models.Domain.RelatedProduct", b =>
                 {
-                    b.HasOne("E_Commerce_Mezzex.Models.Domain.Product", "Product")
+                    b.HasOne("E_Commerce_Mezzex.Models.Domain.Product", "MainProduct")
                         .WithMany("RelatedProducts")
-                        .HasForeignKey("ProductId")
+                        .HasForeignKey("MainProductId")
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
-                    b.HasOne("E_Commerce_Mezzex.Models.Domain.Product", "Related")
+                    b.HasOne("E_Commerce_Mezzex.Models.Domain.Product", "RelatedProductDetails")
                         .WithMany()
-                        .HasForeignKey("RelatedId")
-                        .OnDelete(DeleteBehavior.Cascade)
+                        .HasForeignKey("RelatedProductId")
+                        .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
-                    b.Navigation("Product");
+                    b.Navigation("MainProduct");
 
-                    b.Navigation("Related");
+                    b.Navigation("RelatedProductDetails");
                 });
 
             modelBuilder.Entity("E_Commerce_Mezzex.Models.Domain.RolePermission", b =>
@@ -946,6 +958,8 @@ namespace E_Commerce_Mezzex.Migrations
                     b.Navigation("QuestionsAnswers");
 
                     b.Navigation("RelatedProducts");
+
+                    b.Navigation("Specifications");
 
                     b.Navigation("Variants");
                 });

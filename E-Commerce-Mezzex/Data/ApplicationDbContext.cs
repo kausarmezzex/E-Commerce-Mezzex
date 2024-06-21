@@ -19,6 +19,13 @@ public class ApplicationDbContext : IdentityDbContext<ApplicationUser, Applicati
     public DbSet<RolePermission> RolePermissions { get; set; }
     public DbSet<UserPermission> UserPermissions { get; set; }
 
+    // New DbSets
+    public DbSet<CustomerReview> CustomerReviews { get; set; }
+    public DbSet<ProductSpecification> ProductSpecifications { get; set; }
+    public DbSet<RelatedProduct> RelatedProducts { get; set; }
+    public DbSet<QuestionAnswer> QuestionsAnswers { get; set; }
+    public DbSet<ProductVariant> ProductVariants { get; set; }
+
     protected override void OnModelCreating(ModelBuilder builder)
     {
         base.OnModelCreating(builder);
@@ -63,10 +70,70 @@ public class ApplicationDbContext : IdentityDbContext<ApplicationUser, Applicati
                       v => (MediaType)Enum.Parse(typeof(MediaType), v))
                   .HasMaxLength(50);
         });
+
+        // New entities configurations
+
+        builder.Entity<Product>()
+            .HasMany(p => p.Categories)
+            .WithMany(c => c.Products);
+
+        builder.Entity<Product>()
+            .HasOne(p => p.Specifications)
+            .WithOne()
+            .HasForeignKey<ProductSpecification>(ps => ps.ProductId);
+
+        builder.Entity<Product>()
+            .HasMany(p => p.Images)
+            .WithOne(pi => pi.Product)
+            .HasForeignKey(pi => pi.ProductId)
+            .OnDelete(DeleteBehavior.Restrict); // Resolve multiple cascade paths
+
+        builder.Entity<Product>()
+            .HasMany(p => p.CustomerReviews)
+            .WithOne()
+            .HasForeignKey(cr => cr.ProductId);
+
         builder.Entity<Product>()
             .HasMany(p => p.RelatedProducts)
-            .WithOne(rp => rp.Product)
-            .HasForeignKey(rp => rp.ProductId)
+            .WithOne(rp => rp.MainProduct)
+            .HasForeignKey(rp => rp.MainProductId)
+            .OnDelete(DeleteBehavior.Restrict);
+
+        builder.Entity<Product>()
+            .HasMany(p => p.QuestionsAnswers)
+            .WithOne()
+            .HasForeignKey(qa => qa.ProductId);
+
+        builder.Entity<RelatedProduct>()
+            .HasOne(rp => rp.MainProduct)
+            .WithMany(p => p.RelatedProducts)
+            .HasForeignKey(rp => rp.MainProductId)
+            .OnDelete(DeleteBehavior.Restrict);
+
+        builder.Entity<RelatedProduct>()
+            .HasOne(rp => rp.RelatedProductDetails)
+            .WithMany()
+            .HasForeignKey(rp => rp.RelatedProductId)
+            .OnDelete(DeleteBehavior.Restrict);
+
+        // Configure ProductVariant relationships
+
+        builder.Entity<Product>()
+            .HasMany(p => p.Variants)
+            .WithOne(v => v.Product)
+            .HasForeignKey(v => v.ProductId)
+            .OnDelete(DeleteBehavior.Restrict);
+
+        builder.Entity<ProductVariant>()
+            .HasMany(v => v.Images)
+            .WithOne(i => i.ProductVariant)
+            .HasForeignKey(i => i.ProductVariantId)
+            .OnDelete(DeleteBehavior.Restrict);
+
+        builder.Entity<ProductVariant>()
+            .HasOne(v => v.Product)
+            .WithMany(p => p.Variants)
+            .HasForeignKey(v => v.ProductId)
             .OnDelete(DeleteBehavior.Restrict);
     }
 }
