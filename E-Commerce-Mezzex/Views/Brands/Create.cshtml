@@ -14,7 +14,7 @@
         <span asp-validation-for="Name" class="text-danger"></span>
     </div>
     <div class="form-group mb-3">
-        <label  asp-for="Description" class="control-labelform-label mb-2"></label>
+        <label asp-for="Description" class="control-labelform-label mb-2"></label>
         <textarea asp-for="Description" id="content" class="form-control"></textarea>
         <span asp-validation-for="Description" class="text-danger"></span>
     </div>
@@ -28,13 +28,11 @@
         <span asp-validation-for="DisplayOrder" class="text-danger"></span>
     </div>
 
-    <div class="form-group mb-3">
-        <label for="featuredImageUpload" class="form-label mb-2">Featured Image Upload</label>
+    <div class="mb-3">
+        <label class="form-label mb-2">Featured Image Upload</label>
         <input type="file" id="featuredImageUpload" class="form-control-file" />
-        <img class="mt-2 mb-2 img-fluid" id="featuredImageDisplay" style="display:none;width: 300px;" />
-        <input type="hidden" asp-for="ImageUrl" id="featuredImageUrl" />
+        <img class="mb-2 mt-2" src="" id="featuredImageDisplay" style="display:none;width: 300px;" />
     </div>
-
 
     <div class="mb-3">
         <label class="form-label mb-2">Featured Image URL</label>

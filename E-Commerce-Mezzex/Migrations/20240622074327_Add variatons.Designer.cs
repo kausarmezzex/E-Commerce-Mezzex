@@ -11,8 +11,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace E_Commerce_Mezzex.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20240619124640_Add Initial Migration 8")]
-    partial class AddInitialMigration8
+    [Migration("20240622074327_Add variatons")]
+    partial class Addvariatons
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -358,9 +358,6 @@ namespace E_Commerce_Mezzex.Migrations
                     b.Property<int>("ProductId")
                         .HasColumnType("int");
 
-                    b.Property<int?>("ProductVariantId")
-                        .HasColumnType("int");
-
                     b.Property<string>("SeoFilename")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
@@ -368,6 +365,9 @@ namespace E_Commerce_Mezzex.Migrations
                     b.Property<string>("TitleAttribute")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
+
+                    b.Property<int?>("VariationValueId")
+                        .HasColumnType("int");
 
                     b.Property<string>("VirtualPath")
                         .IsRequired()
@@ -377,7 +377,7 @@ namespace E_Commerce_Mezzex.Migrations
 
                     b.HasIndex("ProductId");
 
-                    b.HasIndex("ProductVariantId");
+                    b.HasIndex("VariationValueId");
 
                     b.ToTable("Pictures");
                 });
@@ -487,30 +487,19 @@ namespace E_Commerce_Mezzex.Migrations
                     b.ToTable("ProductSpecifications");
                 });
 
-            modelBuilder.Entity("E_Commerce_Mezzex.Models.Domain.ProductVariant", b =>
+            modelBuilder.Entity("E_Commerce_Mezzex.Models.Domain.ProductVariationValue", b =>
                 {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
-
-                    b.Property<decimal>("PriceAdjustment")
-                        .HasColumnType("decimal(18,2)");
-
                     b.Property<int>("ProductId")
                         .HasColumnType("int");
 
                     b.Property<int>("VariationValueId")
                         .HasColumnType("int");
 
-                    b.HasKey("Id");
-
-                    b.HasIndex("ProductId");
+                    b.HasKey("ProductId", "VariationValueId");
 
                     b.HasIndex("VariationValueId");
 
-                    b.ToTable("ProductVariants");
+                    b.ToTable("ProductVariationValues");
                 });
 
             modelBuilder.Entity("E_Commerce_Mezzex.Models.Domain.QuestionAnswer", b =>
@@ -557,6 +546,9 @@ namespace E_Commerce_Mezzex.Migrations
 
                     b.Property<int>("MainProductId")
                         .HasColumnType("int");
+
+                    b.Property<bool>("RelatedIsPublish")
+                        .HasColumnType("bit");
 
                     b.Property<int>("RelatedProductId")
                         .HasColumnType("int");
@@ -617,7 +609,8 @@ namespace E_Commerce_Mezzex.Migrations
 
                     b.Property<string>("Name")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                        .HasMaxLength(100)
+                        .HasColumnType("nvarchar(100)");
 
                     b.HasKey("Id");
 
@@ -632,18 +625,24 @@ namespace E_Commerce_Mezzex.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
+                    b.Property<int>("ProductId")
+                        .HasColumnType("int");
+
                     b.Property<string>("Value")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                        .HasMaxLength(100)
+                        .HasColumnType("nvarchar(100)");
 
                     b.Property<int>("VariationTypeId")
                         .HasColumnType("int");
 
                     b.HasKey("Id");
 
+                    b.HasIndex("ProductId");
+
                     b.HasIndex("VariationTypeId");
 
-                    b.ToTable("VariationValue");
+                    b.ToTable("VariationValues");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>
@@ -756,6 +755,21 @@ namespace E_Commerce_Mezzex.Migrations
                     b.ToTable("AspNetUserTokens", (string)null);
                 });
 
+            modelBuilder.Entity("ProductVariationType", b =>
+                {
+                    b.Property<int>("ProductsId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("VariationTypesId")
+                        .HasColumnType("int");
+
+                    b.HasKey("ProductsId", "VariationTypesId");
+
+                    b.HasIndex("VariationTypesId");
+
+                    b.ToTable("ProductVariationType");
+                });
+
             modelBuilder.Entity("BrandProduct", b =>
                 {
                     b.HasOne("E_Commerce_Mezzex.Models.Domain.Brand", null)
@@ -813,11 +827,14 @@ namespace E_Commerce_Mezzex.Migrations
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
-                    b.HasOne("E_Commerce_Mezzex.Models.Domain.ProductVariant", null)
+                    b.HasOne("E_Commerce_Mezzex.Models.Domain.VariationValue", "VariationValue")
                         .WithMany("Images")
-                        .HasForeignKey("ProductVariantId");
+                        .HasForeignKey("VariationValueId")
+                        .OnDelete(DeleteBehavior.Cascade);
 
                     b.Navigation("Product");
+
+                    b.Navigation("VariationValue");
                 });
 
             modelBuilder.Entity("E_Commerce_Mezzex.Models.Domain.ProductSpecification", b =>
@@ -829,16 +846,16 @@ namespace E_Commerce_Mezzex.Migrations
                         .IsRequired();
                 });
 
-            modelBuilder.Entity("E_Commerce_Mezzex.Models.Domain.ProductVariant", b =>
+            modelBuilder.Entity("E_Commerce_Mezzex.Models.Domain.ProductVariationValue", b =>
                 {
                     b.HasOne("E_Commerce_Mezzex.Models.Domain.Product", "Product")
-                        .WithMany("Variants")
+                        .WithMany("ProductVariationValues")
                         .HasForeignKey("ProductId")
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
                     b.HasOne("E_Commerce_Mezzex.Models.Domain.VariationValue", "VariationValue")
-                        .WithMany("ProductVariants")
+                        .WithMany("ProductVariationValues")
                         .HasForeignKey("VariationValueId")
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
@@ -922,11 +939,19 @@ namespace E_Commerce_Mezzex.Migrations
 
             modelBuilder.Entity("E_Commerce_Mezzex.Models.Domain.VariationValue", b =>
                 {
+                    b.HasOne("E_Commerce_Mezzex.Models.Domain.Product", "Product")
+                        .WithMany("VariationValues")
+                        .HasForeignKey("ProductId")
+                        .OnDelete(DeleteBehavior.NoAction)
+                        .IsRequired();
+
                     b.HasOne("E_Commerce_Mezzex.Models.Domain.VariationType", "VariationType")
-                        .WithMany("Values")
+                        .WithMany("VariationValues")
                         .HasForeignKey("VariationTypeId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
+
+                    b.Navigation("Product");
 
                     b.Navigation("VariationType");
                 });
@@ -982,6 +1007,21 @@ namespace E_Commerce_Mezzex.Migrations
                         .IsRequired();
                 });
 
+            modelBuilder.Entity("ProductVariationType", b =>
+                {
+                    b.HasOne("E_Commerce_Mezzex.Models.Domain.Product", null)
+                        .WithMany()
+                        .HasForeignKey("ProductsId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("E_Commerce_Mezzex.Models.Domain.VariationType", null)
+                        .WithMany()
+                        .HasForeignKey("VariationTypesId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+                });
+
             modelBuilder.Entity("ApplicationUser", b =>
                 {
                     b.Navigation("UserPermissions");
@@ -1010,28 +1050,27 @@ namespace E_Commerce_Mezzex.Migrations
 
                     b.Navigation("Images");
 
+                    b.Navigation("ProductVariationValues");
+
                     b.Navigation("QuestionsAnswers");
 
                     b.Navigation("RelatedProducts");
 
                     b.Navigation("Specifications");
 
-                    b.Navigation("Variants");
-                });
-
-            modelBuilder.Entity("E_Commerce_Mezzex.Models.Domain.ProductVariant", b =>
-                {
-                    b.Navigation("Images");
+                    b.Navigation("VariationValues");
                 });
 
             modelBuilder.Entity("E_Commerce_Mezzex.Models.Domain.VariationType", b =>
                 {
-                    b.Navigation("Values");
+                    b.Navigation("VariationValues");
                 });
 
             modelBuilder.Entity("E_Commerce_Mezzex.Models.Domain.VariationValue", b =>
                 {
-                    b.Navigation("ProductVariants");
+                    b.Navigation("Images");
+
+                    b.Navigation("ProductVariationValues");
                 });
 #pragma warning restore 612, 618
         }

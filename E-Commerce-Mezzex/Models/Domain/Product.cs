@@ -1,5 +1,4 @@
-﻿using CloudinaryDotNet.Actions;
-using System;
+﻿using System;
 using System.Collections.Generic;
 
 namespace E_Commerce_Mezzex.Models.Domain
@@ -33,10 +32,14 @@ namespace E_Commerce_Mezzex.Models.Domain
         public int DisplayOrder { get; set; }
 
         // New properties
-        public ICollection<CustomerReview> ? CustomerReviews { get; set; } = new List<CustomerReview>();
-        public ICollection<ProductVariant> Variants { get; set; } = new List<ProductVariant>();
-        public ProductSpecification ? Specifications { get; set; }
+        public ICollection<CustomerReview>? CustomerReviews { get; set; } = new List<CustomerReview>();
+        public ProductSpecification? Specifications { get; set; }
         public ICollection<RelatedProduct>? RelatedProducts { get; set; } = new List<RelatedProduct>();
         public ICollection<QuestionAnswer>? QuestionsAnswers { get; set; } = new List<QuestionAnswer>();
+
+        // New collection for Variation Types
+        public ICollection<VariationType> VariationTypes { get; set; } = new List<VariationType>();
+        public ICollection<VariationValue> VariationValues { get; set; } = new List<VariationValue>();
+        public ICollection<ProductVariationValue> ProductVariationValues { get; set; } = new List<ProductVariationValue>();
     }
 }

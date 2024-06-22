@@ -7,6 +7,7 @@ using E_Commerce_Mezzex.Models.ViewModel;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Collections.Generic;
+using Microsoft.EntityFrameworkCore;
 
 namespace E_Commerce_Mezzex.Controllers
 {
@@ -15,18 +16,39 @@ namespace E_Commerce_Mezzex.Controllers
         private readonly IProductRepository _productRepository;
         private readonly ICategoryRepository _categoryRepository;
         private readonly IBrandRepository _brandRepository;
+        private readonly ApplicationDbContext _context;
 
-        public ProductsController(IProductRepository productRepository, ICategoryRepository categoryRepository, IBrandRepository brandRepository)
+        public ProductsController(IProductRepository productRepository, ICategoryRepository categoryRepository, IBrandRepository brandRepository, ApplicationDbContext context)
         {
             _productRepository = productRepository;
             _categoryRepository = categoryRepository;
             _brandRepository = brandRepository;
+            this._context = context;
         }
+
+
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> CreateValue([Bind("Id,Value,VariationTypeId")] VariationValue variationValue)
+        {
+            if (!ModelState.IsValid)
+            {
+                _context.Add(variationValue);
+                await _context.SaveChangesAsync();
+                return Json(new { success = true, message = "Variation Value added successfully!" });
+            }
+            // Optionally, set ViewBag for the form again if the model is invalid
+            ViewBag.VariationTypes = new SelectList(_context.VariationTypes, "Id", "Name", variationValue.VariationTypeId);
+            return Json(new { success = false, message = "Validation failed.", errors = ModelState.Values.SelectMany(v => v.Errors) });
+        }
+
 
         [Authorize(Policy = "CreateProductPolicy")]
         [HttpGet]
         public async Task<IActionResult> Create()
         {
+            ViewBag.VariationTypes = new SelectList(_context.VariationTypes, "Id", "Name");
             await PopulateViewData();
             return View(new Product());
         }

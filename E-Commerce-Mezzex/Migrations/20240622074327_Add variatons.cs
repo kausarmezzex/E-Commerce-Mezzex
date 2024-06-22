@@ -6,7 +6,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace E_Commerce_Mezzex.Migrations
 {
     /// <inheritdoc />
-    public partial class AddInitialMigration : Migration
+    public partial class Addvariatons : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -138,6 +138,7 @@ namespace E_Commerce_Mezzex.Migrations
                     Price = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
                     SKU = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     CategoryId = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    RelatedProductId = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     BrandId = table.Column<int>(type: "int", nullable: false),
                     NotReturnable = table.Column<bool>(type: "bit", nullable: false),
                     DisableBuyButton = table.Column<bool>(type: "bit", nullable: false),
@@ -151,14 +152,24 @@ namespace E_Commerce_Mezzex.Migrations
                     MetaDescription = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     MetaTitle = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     TagNames = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    DisplayOrder = table.Column<int>(type: "int", nullable: false),
-                    DiscountPrice = table.Column<decimal>(type: "decimal(18,2)", nullable: true),
-                    ShippingInformation = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    WarrantyInformation = table.Column<string>(type: "nvarchar(max)", nullable: false)
+                    DisplayOrder = table.Column<int>(type: "int", nullable: false)
                 },
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_Products", x => x.Id);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "VariationTypes",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    Name = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_VariationTypes", x => x.Id);
                 });
 
             migrationBuilder.CreateTable(
@@ -406,35 +417,6 @@ namespace E_Commerce_Mezzex.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "ProductVariants",
-                columns: table => new
-                {
-                    Id = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    Color = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    Size = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    Price = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
-                    ProductId = table.Column<int>(type: "int", nullable: false),
-                    ProductId1 = table.Column<int>(type: "int", nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_ProductVariants", x => x.Id);
-                    table.ForeignKey(
-                        name: "FK_ProductVariants_Products_ProductId",
-                        column: x => x.ProductId,
-                        principalTable: "Products",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Restrict);
-                    table.ForeignKey(
-                        name: "FK_ProductVariants_Products_ProductId1",
-                        column: x => x.ProductId1,
-                        principalTable: "Products",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
-                });
-
-            migrationBuilder.CreateTable(
                 name: "QuestionsAnswers",
                 columns: table => new
                 {
@@ -443,8 +425,8 @@ namespace E_Commerce_Mezzex.Migrations
                     Question = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     Answer = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     QuestionDate = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    AnswerDate = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    ProductId = table.Column<int>(type: "int", nullable: false)
+                    ProductId = table.Column<int>(type: "int", nullable: false),
+                    ProductId1 = table.Column<int>(type: "int", nullable: true)
                 },
                 constraints: table =>
                 {
@@ -455,6 +437,11 @@ namespace E_Commerce_Mezzex.Migrations
                         principalTable: "Products",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_QuestionsAnswers_Products_ProductId1",
+                        column: x => x.ProductId1,
+                        principalTable: "Products",
+                        principalColumn: "Id");
                 });
 
             migrationBuilder.CreateTable(
@@ -466,8 +453,8 @@ namespace E_Commerce_Mezzex.Migrations
                     MainProductId = table.Column<int>(type: "int", nullable: false),
                     RelatedProductId = table.Column<int>(type: "int", nullable: false),
                     RelatedProductName = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    RelatedProductPrice = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
-                    RelatedProductDetailsId = table.Column<int>(type: "int", nullable: false)
+                    RelatedIsPublish = table.Column<bool>(type: "bit", nullable: false),
+                    RelatedProductPrice = table.Column<decimal>(type: "decimal(18,2)", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -479,9 +466,59 @@ namespace E_Commerce_Mezzex.Migrations
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Restrict);
                     table.ForeignKey(
-                        name: "FK_RelatedProducts_Products_RelatedProductDetailsId",
-                        column: x => x.RelatedProductDetailsId,
+                        name: "FK_RelatedProducts_Products_RelatedProductId",
+                        column: x => x.RelatedProductId,
                         principalTable: "Products",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "ProductVariationType",
+                columns: table => new
+                {
+                    ProductsId = table.Column<int>(type: "int", nullable: false),
+                    VariationTypesId = table.Column<int>(type: "int", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_ProductVariationType", x => new { x.ProductsId, x.VariationTypesId });
+                    table.ForeignKey(
+                        name: "FK_ProductVariationType_Products_ProductsId",
+                        column: x => x.ProductsId,
+                        principalTable: "Products",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_ProductVariationType_VariationTypes_VariationTypesId",
+                        column: x => x.VariationTypesId,
+                        principalTable: "VariationTypes",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "VariationValues",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    Value = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: false),
+                    VariationTypeId = table.Column<int>(type: "int", nullable: false),
+                    ProductId = table.Column<int>(type: "int", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_VariationValues", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_VariationValues_Products_ProductId",
+                        column: x => x.ProductId,
+                        principalTable: "Products",
+                        principalColumn: "Id");
+                    table.ForeignKey(
+                        name: "FK_VariationValues_VariationTypes_VariationTypeId",
+                        column: x => x.VariationTypeId,
+                        principalTable: "VariationTypes",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                 });
@@ -494,24 +531,49 @@ namespace E_Commerce_Mezzex.Migrations
                         .Annotation("SqlServer:Identity", "1, 1"),
                     VirtualPath = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     ProductId = table.Column<int>(type: "int", nullable: false),
+                    VariationValueId = table.Column<int>(type: "int", nullable: true),
                     SeoFilename = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     AltAttribute = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     TitleAttribute = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    MediaType = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: false),
-                    ProductVariantId = table.Column<int>(type: "int", nullable: true)
+                    MediaType = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: false)
                 },
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_Pictures", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_Pictures_ProductVariants_ProductVariantId",
-                        column: x => x.ProductVariantId,
-                        principalTable: "ProductVariants",
-                        principalColumn: "Id");
-                    table.ForeignKey(
                         name: "FK_Pictures_Products_ProductId",
                         column: x => x.ProductId,
                         principalTable: "Products",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
+                    table.ForeignKey(
+                        name: "FK_Pictures_VariationValues_VariationValueId",
+                        column: x => x.VariationValueId,
+                        principalTable: "VariationValues",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "ProductVariationValues",
+                columns: table => new
+                {
+                    ProductId = table.Column<int>(type: "int", nullable: false),
+                    VariationValueId = table.Column<int>(type: "int", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_ProductVariationValues", x => new { x.ProductId, x.VariationValueId });
+                    table.ForeignKey(
+                        name: "FK_ProductVariationValues_Products_ProductId",
+                        column: x => x.ProductId,
+                        principalTable: "Products",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
+                    table.ForeignKey(
+                        name: "FK_ProductVariationValues_VariationValues_VariationValueId",
+                        column: x => x.VariationValueId,
+                        principalTable: "VariationValues",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Restrict);
                 });
@@ -581,9 +643,9 @@ namespace E_Commerce_Mezzex.Migrations
                 column: "ProductId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_Pictures_ProductVariantId",
+                name: "IX_Pictures_VariationValueId",
                 table: "Pictures",
-                column: "ProductVariantId");
+                column: "VariationValueId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_ProductSpecifications_ProductId",
@@ -592,14 +654,14 @@ namespace E_Commerce_Mezzex.Migrations
                 unique: true);
 
             migrationBuilder.CreateIndex(
-                name: "IX_ProductVariants_ProductId",
-                table: "ProductVariants",
-                column: "ProductId");
+                name: "IX_ProductVariationType_VariationTypesId",
+                table: "ProductVariationType",
+                column: "VariationTypesId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_ProductVariants_ProductId1",
-                table: "ProductVariants",
-                column: "ProductId1");
+                name: "IX_ProductVariationValues_VariationValueId",
+                table: "ProductVariationValues",
+                column: "VariationValueId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_QuestionsAnswers_ProductId",
@@ -607,14 +669,19 @@ namespace E_Commerce_Mezzex.Migrations
                 column: "ProductId");
 
             migrationBuilder.CreateIndex(
+                name: "IX_QuestionsAnswers_ProductId1",
+                table: "QuestionsAnswers",
+                column: "ProductId1");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_RelatedProducts_MainProductId",
                 table: "RelatedProducts",
                 column: "MainProductId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_RelatedProducts_RelatedProductDetailsId",
+                name: "IX_RelatedProducts_RelatedProductId",
                 table: "RelatedProducts",
-                column: "RelatedProductDetailsId");
+                column: "RelatedProductId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_RolePermissions_PermissionId",
@@ -625,6 +692,16 @@ namespace E_Commerce_Mezzex.Migrations
                 name: "IX_UserPermissions_PermissionId",
                 table: "UserPermissions",
                 column: "PermissionId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_VariationValues_ProductId",
+                table: "VariationValues",
+                column: "ProductId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_VariationValues_VariationTypeId",
+                table: "VariationValues",
+                column: "VariationTypeId");
         }
 
         /// <inheritdoc />
@@ -661,6 +738,12 @@ namespace E_Commerce_Mezzex.Migrations
                 name: "ProductSpecifications");
 
             migrationBuilder.DropTable(
+                name: "ProductVariationType");
+
+            migrationBuilder.DropTable(
+                name: "ProductVariationValues");
+
+            migrationBuilder.DropTable(
                 name: "QuestionsAnswers");
 
             migrationBuilder.DropTable(
@@ -679,7 +762,7 @@ namespace E_Commerce_Mezzex.Migrations
                 name: "Categories");
 
             migrationBuilder.DropTable(
-                name: "ProductVariants");
+                name: "VariationValues");
 
             migrationBuilder.DropTable(
                 name: "AspNetRoles");
@@ -692,6 +775,9 @@ namespace E_Commerce_Mezzex.Migrations
 
             migrationBuilder.DropTable(
                 name: "Products");
+
+            migrationBuilder.DropTable(
+                name: "VariationTypes");
         }
     }
 }

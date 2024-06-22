@@ -19,12 +19,13 @@ public class ApplicationDbContext : IdentityDbContext<ApplicationUser, Applicati
     public DbSet<RolePermission> RolePermissions { get; set; }
     public DbSet<UserPermission> UserPermissions { get; set; }
 
-    // New DbSets
     public DbSet<CustomerReview> CustomerReviews { get; set; }
     public DbSet<ProductSpecification> ProductSpecifications { get; set; }
     public DbSet<RelatedProduct> RelatedProducts { get; set; }
     public DbSet<QuestionAnswer> QuestionsAnswers { get; set; }
-    public DbSet<ProductVariant> ProductVariants { get; set; }
+    public DbSet<VariationType> VariationTypes { get; set; }
+    public DbSet<VariationValue> VariationValues { get; set; }
+    public DbSet<ProductVariationValue> ProductVariationValues { get; set; }
 
     protected override void OnModelCreating(ModelBuilder builder)
     {
@@ -116,24 +117,44 @@ public class ApplicationDbContext : IdentityDbContext<ApplicationUser, Applicati
             .HasForeignKey(rp => rp.RelatedProductId)
             .OnDelete(DeleteBehavior.Restrict);
 
-        // Configure ProductVariant relationships
+        // Configure VariationType and VariationValue
+        builder.Entity<VariationType>()
+            .HasMany(vt => vt.VariationValues)
+            .WithOne(vv => vv.VariationType)
+            .HasForeignKey(vv => vv.VariationTypeId)
+            .OnDelete(DeleteBehavior.Cascade);
 
         builder.Entity<Product>()
-            .HasMany(p => p.Variants)
-            .WithOne(v => v.Product)
-            .HasForeignKey(v => v.ProductId)
-            .OnDelete(DeleteBehavior.Restrict);
+            .HasMany(p => p.VariationTypes)
+            .WithMany(vt => vt.Products);
 
-        builder.Entity<ProductVariant>()
-            .HasMany(v => v.Images)
-            .WithOne(i => i.ProductVariant)
-            .HasForeignKey(i => i.ProductVariantId)
-            .OnDelete(DeleteBehavior.Restrict);
+        // Configure the many-to-many relationship between Product and VariationValue
+        builder.Entity<ProductVariationValue>()
+            .HasKey(pvv => new { pvv.ProductId, pvv.VariationValueId });
 
-        builder.Entity<ProductVariant>()
-            .HasOne(v => v.Product)
-            .WithMany(p => p.Variants)
-            .HasForeignKey(v => v.ProductId)
-            .OnDelete(DeleteBehavior.Restrict);
+        builder.Entity<ProductVariationValue>()
+            .HasOne(pvv => pvv.Product)
+            .WithMany(p => p.ProductVariationValues)
+            .HasForeignKey(pvv => pvv.ProductId)
+            .OnDelete(DeleteBehavior.Restrict); // Specify RESTRICT to avoid cycles
+
+        builder.Entity<ProductVariationValue>()
+            .HasOne(pvv => pvv.VariationValue)
+            .WithMany(vv => vv.ProductVariationValues)
+            .HasForeignKey(pvv => pvv.VariationValueId)
+            .OnDelete(DeleteBehavior.Restrict); // Specify RESTRICT to avoid cycles
+
+        builder.Entity<VariationValue>()
+            .HasMany(vv => vv.Images)
+            .WithOne(pi => pi.VariationValue)
+            .HasForeignKey(pi => pi.VariationValueId)
+            .OnDelete(DeleteBehavior.Cascade);
+
+        // Modify the relationship causing the cycle
+        builder.Entity<VariationValue>()
+            .HasOne(vv => vv.Product)
+            .WithMany(p => p.VariationValues)
+            .HasForeignKey(vv => vv.ProductId)
+            .OnDelete(DeleteBehavior.NoAction); // Specify NO ACTION to avoid cycles
     }
 }

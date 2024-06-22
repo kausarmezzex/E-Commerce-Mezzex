@@ -1,0 +1,17 @@
+﻿@model E_Commerce_Mezzex.Models.Domain.Product
+
+<div class="form-group mb-3">
+    <label asp-for="MetaKeywords" class="control-label mb-2"></label>
+    <input asp-for="MetaKeywords" class="form-control" />
+    <span asp-validation-for="MetaKeywords" class="text-danger"></span>
+</div>
+<div class="form-group mb-3">
+    <label asp-for="MetaDescription" class="control-label mb-2"></label>
+    <textarea asp-for="MetaDescription" class="form-control"></textarea>
+    <span asp-validation-for="MetaDescription" class="text-danger"></span>
+</div>
+<div class="form-group mb-3">
+    <label asp-for="MetaTitle" class="control-label mb-2"></label>
+    <input asp-for="MetaTitle" class="form-control" />
+    <span asp-validation-for="MetaTitle" class="text-danger"></span>
+</div>

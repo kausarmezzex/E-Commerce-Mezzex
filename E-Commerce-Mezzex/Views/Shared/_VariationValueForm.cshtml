@@ -1,0 +1,54 @@
+﻿@model E_Commerce_Mezzex.Models.ViewModel.VariationViewModel
+
+<!-- VariationValue Form -->
+<form id="VariationValueForm" asp-controller="VariationValues" asp-action="Create" method="post">
+    @Html.AntiForgeryToken()
+    <input type="hidden" asp-for="ProductId" />
+    <div class="form-group">
+        <label asp-for="VariationValue.Value"></label>
+        <input asp-for="VariationValue.Value" class="form-control" />
+        <span asp-validation-for="VariationValue.Value" class="text-danger"></span>
+    </div>
+    <div class="form-group">
+        <label asp-for="VariationValue.VariationTypeId"></label>
+        <select asp-for="VariationValue.VariationTypeId" class="form-control" asp-items="ViewBag.VariationTypes"></select>
+        <span asp-validation-for="VariationValue.VariationTypeId" class="text-danger"></span>
+    </div>
+    <button type="submit" class="btn btn-primary">Save</button>
+    <!-- Button to open the modal -->
+    <button type="button" class="btn btn-secondary" data-toggle="modal" data-target="#variationTypeModal">Add Variation Type</button>
+</form>
+
+<!-- Modal HTML -->
+<div class="modal fade" id="variationTypeModal" tabindex="-1" role="dialog" aria-labelledby="variationTypeModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="variationTypeModalLabel">Create Variation Type</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <!-- VariationType Form inside Modal -->
+                <form id="variationTypeForm" asp-controller="VariationTypes" asp-action="Create" method="post">
+                    <div class="form-group">
+                        <label asp-for="VariationType.Name" class="control-label"></label>
+                        <input asp-for="VariationType.Name" class="form-control" />
+                        <span asp-validation-for="VariationType.Name" class="text-danger"></span>
+                    </div>
+                    <div class="form-group">
+                        <input type="submit" value="Create" class="btn btn-primary" />
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+    <!-- Ensure Bootstrap JS is included -->
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+}

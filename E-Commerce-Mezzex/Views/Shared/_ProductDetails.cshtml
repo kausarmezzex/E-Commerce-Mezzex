@@ -1,0 +1,95 @@
+﻿@model E_Commerce_Mezzex.Models.Domain.Product
+
+<div class="form-group mb-3 mt-2 d-flex justify-content-end">
+    <input type="submit" value="Add product" class="btn btn-primary btn-lg" />
+</div>
+<div class="form-group mb-3">
+    <label asp-for="Name" class="control-label mb-2"></label>
+    <input asp-for="Name" class="form-control" />
+    <span asp-validation-for="Name" class="text-danger"></span>
+</div>
+<div class="form-group mb-3">
+    <label asp-for="ShortDescription" class="control-label mb-2"></label>
+    <textarea asp-for="ShortDescription" class="form-control"></textarea>
+    <span asp-validation-for="ShortDescription" class="text-danger"></span>
+</div>
+<div class="form-group mb-3">
+    <label asp-for="FullDescription" class="control-label mb-2"></label>
+    <textarea asp-for="FullDescription" id="content" class="form-control"></textarea>
+    <span asp-validation-for="FullDescription" class="text-danger"></span>
+</div>
+<div class="form-group mb-3">
+    <label asp-for="DisplayOrder" class="mb-2"></label>
+    <input asp-for="DisplayOrder" class="form-control" />
+    <span asp-validation-for="DisplayOrder" class="text-danger"></span>
+</div>
+<div class="form-group mb-3">
+    <label asp-for="SKU" class="control-label mb-2"></label>
+    <input asp-for="SKU" class="form-control"></input>
+    <span asp-validation-for="SKU" class="text-danger"></span>
+</div>
+<div class="form-group mb-3">
+    <label asp-for="Price" class="control-label mb-2"></label>
+    <input asp-for="Price" class="form-control" />
+    <span asp-validation-for="Price" class="text-danger"></span>
+</div>
+<div class="form-group mb-3">
+    <label asp-for="CategoryId" class="control-label mb-2">Category</label>
+    <select asp-for="CategoryId" class="form-control" multiple>
+        @foreach (var category in ViewBag.Categories)
+        {
+            <option value="@category.Value">@category.Text</option>
+        }
+    </select>
+    <span asp-validation-for="CategoryId" class="text-danger"></span>
+</div>
+<div class="form-group mb-3">
+    <label asp-for="BrandId" class="control-label mb-2">Brand</label>
+    <select asp-for="BrandId" class="form-control" asp-items="ViewBag.Brands"></select>
+    <span asp-validation-for="BrandId" class="text-danger"></span>
+</div>
+<div class="custom-control custom-checkbox">
+    <input class="custom-control-input" type="checkbox" id="NotReturnable" asp-for="NotReturnable" />
+    <label for="NotReturnable" class="custom-control-label">Not Returnable</label>
+    <span asp-validation-for="NotReturnable" class="text-danger"></span>
+</div>
+<div class="custom-control custom-checkbox">
+    <input class="custom-control-input" type="checkbox" id="IsPublish" asp-for="IsPublish" />
+    <label for="IsPublish" class="custom-control-label">Is Publish</label>
+    <span asp-validation-for="IsPublish" class="text-danger"></span>
+</div>
+<div class="custom-control custom-checkbox">
+    <input class="custom-control-input" type="checkbox" id="DisableBuyButton" asp-for="DisableBuyButton" />
+    <label for="DisableBuyButton" class="custom-control-label">Disable Buy Button</label>
+    <span asp-validation-for="DisableBuyButton" class="text-danger"></span>
+</div>
+<div class="custom-control custom-checkbox">
+    <input class="custom-control-input" type="checkbox" id="DisableWishlistButton" asp-for="DisableWishlistButton" />
+    <label for="DisableWishlistButton" class="custom-control-label">Disable Wishlist Button</label>
+    <span asp-validation-for="DisableWishlistButton" class="text-danger"></span>
+</div>
+<div class="custom-control custom-checkbox">
+    <input class="custom-control-input" type="checkbox" id="ShowOnHomePage" asp-for="ShowOnHomePage" />
+    <label for="ShowOnHomePage" class="custom-control-label">Show On Home Page</label>
+    <span asp-validation-for="ShowOnHomePage" class="text-danger"></span>
+</div>
+<div class="custom-control custom-checkbox">
+    <input class="custom-control-input" type="checkbox" id="AllowCustomerReview" asp-for="AllowCustomerReview" />
+    <label for="AllowCustomerReview" class="custom-control-label">Allow Customer Review</label>
+    <span asp-validation-for="AllowCustomerReview" class="text-danger"></span>
+</div>
+<div class="form-group mb-3">
+    <label asp-for="AvailableStartDateTimeUtc" class="control-label mb-2"></label>
+    <input asp-for="AvailableStartDateTimeUtc" class="form-control" />
+    <span asp-validation-for="AvailableStartDateTimeUtc" class="text-danger"></span>
+</div>
+<div class="form-group mb-3">
+    <label asp-for="AvailableEndDateTimeUtc" class="control-label mb-2"></label>
+    <input asp-for="AvailableEndDateTimeUtc" class="form-control" />
+    <span asp-validation-for="AvailableEndDateTimeUtc" class="text-danger"></span>
+</div>
+<div class="form-group mb-3">
+    <label asp-for="TagNames" class="control-label mb-2">Tags</label>
+    <select class="form-control" multiple="multiple" asp-for="TagNames" id="tagsInput"></select>
+    <span asp-validation-for="TagNames" class="text-danger"></span>
+</div>
