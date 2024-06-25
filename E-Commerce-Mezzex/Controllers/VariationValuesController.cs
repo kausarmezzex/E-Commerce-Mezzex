@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using E_Commerce_Mezzex.Models.Domain;
+using E_Commerce_Mezzex.Models.ViewModel;
 
 namespace E_Commerce_Mezzex.Controllers
 {
@@ -45,28 +46,33 @@ namespace E_Commerce_Mezzex.Controllers
         }
 
         // GET: VariationValues/Create
-        public IActionResult Create()
+        public IActionResult Create(int productId)
         {
+            var model = new VariationViewModel
+            {
+                ProductId = productId,
+                VariationValue = new VariationValue { ProductId = productId }
+            };
             ViewData["VariationTypeId"] = new SelectList(_context.VariationTypes, "Id", "Name");
-            return View();
+            return View(model);
         }
 
         // POST: VariationValues/Create
-        // To protect from overposting attacks, enable the specific properties you want to bind to.
-        // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Id,Value,VariationTypeId, ProductId")] VariationValue variationValue)
+        public async Task<IActionResult> Create(VariationViewModel model)
         {
             if (!ModelState.IsValid)
             {
-                _context.Add(variationValue);
+                model.VariationValue.ProductId = model.ProductId; // Ensure ProductId is set in VariationValue
+                _context.Add(model.VariationValue);
                 await _context.SaveChangesAsync();
-                return Json(new { success = true, message = "Variation Value added successfully!" });
+                return Json(new { success = true, productId = model.ProductId});
             }
-
+            ViewData["VariationTypeId"] = new SelectList(_context.VariationTypes, "Id", "Name"); // Ensure ViewBag is populated
             return Json(new { success = false, message = "Validation failed.", errors = ModelState.Values.SelectMany(v => v.Errors) });
         }
+
 
         // GET: VariationValues/Edit/5
         public async Task<IActionResult> Edit(int? id)

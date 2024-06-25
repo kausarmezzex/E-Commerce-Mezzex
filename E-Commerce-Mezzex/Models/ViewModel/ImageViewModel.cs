@@ -10,6 +10,7 @@ namespace E_Commerce_Mezzex.Models.ViewModel
         public string AltAttribute { get; set; }
         public string TitleAttribute { get; set; }
         public MediaType MediaType { get; set; }
+        public int? VariationValueId { get; set; }
     }
 
 }

@@ -1,25 +1,26 @@
 ﻿using E_Commerce_Mezzex.Models.Domain;
 using E_Commerce_Mezzex.Models.ViewModel;
 using E_Commerce_Mezzex.Repositories;
-using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using System.Collections.Generic;
+using System;
+using System.Threading.Tasks;
 
 namespace E_Commerce_Mezzex.Controllers
 {
-    [Authorize(Roles = "Admin,Administrator")]
     [Route("api/[controller]")]
     [ApiController]
-    public class ImagesDetailsController : ControllerBase
+    public class VariationsImagesController : ControllerBase
     {
-        private readonly IImageRepository _imageRepository;
+        private readonly IImageRepository imageRepository;
 
-        public ImagesDetailsController(IImageRepository imageRepository)
+        public VariationsImagesController(IImageRepository imageRepository)
         {
-            _imageRepository = imageRepository;
+            this.imageRepository = imageRepository;
         }
 
-        [HttpPost]
-        public async Task<IActionResult> SaveAllAsync([FromBody] List<ImageViewModel> images)
+        [HttpPost("SaveAllAsync")]
+        public async Task<IActionResult> SaveVariationAllAsync([FromBody] List<ImageViewModel> images)
         {
             if (images == null || images.Count == 0)
             {
@@ -34,14 +35,14 @@ namespace E_Commerce_Mezzex.Controllers
                     {
                         VirtualPath = image.VirtualPath,
                         ProductId = image.ProductId,
+                        VariationValueId = image.VariationValueId, // Assign VariationValueId from ViewModel
                         SeoFilename = image.SeoFilename,
                         AltAttribute = image.AltAttribute,
                         TitleAttribute = image.TitleAttribute,
-                        MediaType = image.MediaType,
-                        VariationValueId = image.VariationValueId,
+                        MediaType = image.MediaType
                     };
 
-                    await _imageRepository.AddAsync(picture);
+                    await imageRepository.AddAsync(picture);
                 }
 
                 return Ok();

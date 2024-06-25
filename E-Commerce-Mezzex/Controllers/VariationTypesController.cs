@@ -55,7 +55,7 @@ namespace E_Commerce_Mezzex.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create([Bind("Id,Name")] VariationType variationType)
         {
-            if (ModelState.IsValid)
+            if (ModelState.IsValid) 
             {
                 _context.Add(variationType);
                 await _context.SaveChangesAsync();

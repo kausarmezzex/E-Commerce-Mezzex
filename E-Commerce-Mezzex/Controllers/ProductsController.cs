@@ -26,24 +26,6 @@ namespace E_Commerce_Mezzex.Controllers
             this._context = context;
         }
 
-
-
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> CreateValue([Bind("Id,Value,VariationTypeId")] VariationValue variationValue)
-        {
-            if (!ModelState.IsValid)
-            {
-                _context.Add(variationValue);
-                await _context.SaveChangesAsync();
-                return Json(new { success = true, message = "Variation Value added successfully!" });
-            }
-            // Optionally, set ViewBag for the form again if the model is invalid
-            ViewBag.VariationTypes = new SelectList(_context.VariationTypes, "Id", "Name", variationValue.VariationTypeId);
-            return Json(new { success = false, message = "Validation failed.", errors = ModelState.Values.SelectMany(v => v.Errors) });
-        }
-
-
         [Authorize(Policy = "CreateProductPolicy")]
         [HttpGet]
         public async Task<IActionResult> Create()
