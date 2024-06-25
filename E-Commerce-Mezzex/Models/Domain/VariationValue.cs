@@ -1,6 +1,6 @@
-﻿using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
+﻿using E_Commerce_Mezzex.Models.Domain;
 using System.ComponentModel.DataAnnotations.Schema;
+using System.ComponentModel.DataAnnotations;
 
 namespace E_Commerce_Mezzex.Models.Domain
 {
@@ -14,7 +14,7 @@ namespace E_Commerce_Mezzex.Models.Domain
 
         [Required]
         public int VariationTypeId { get; set; }
-        public VariationType VariationType { get; set; }
+        public VariationType VariationType { get; set; } // Navigation property
 
         [Required]
         public int ProductId { get; set; }

@@ -18,7 +18,6 @@ public class ApplicationDbContext : IdentityDbContext<ApplicationUser, Applicati
     public DbSet<Permission> Permissions { get; set; }
     public DbSet<RolePermission> RolePermissions { get; set; }
     public DbSet<UserPermission> UserPermissions { get; set; }
-
     public DbSet<CustomerReview> CustomerReviews { get; set; }
     public DbSet<ProductSpecification> ProductSpecifications { get; set; }
     public DbSet<RelatedProduct> RelatedProducts { get; set; }
@@ -31,12 +30,14 @@ public class ApplicationDbContext : IdentityDbContext<ApplicationUser, Applicati
     {
         base.OnModelCreating(builder);
 
+        // Configure Category relationships
         builder.Entity<Category>()
             .HasMany(c => c.SubCategories)
             .WithOne(c => c.ParentCategory)
             .HasForeignKey(c => c.ParentCategoryId)
             .OnDelete(DeleteBehavior.Restrict);
 
+        // Configure RolePermission relationships
         builder.Entity<RolePermission>()
             .HasKey(rp => new { rp.RoleId, rp.PermissionId });
 
@@ -50,6 +51,7 @@ public class ApplicationDbContext : IdentityDbContext<ApplicationUser, Applicati
             .WithMany(p => p.RolePermissions)
             .HasForeignKey(rp => rp.PermissionId);
 
+        // Configure UserPermission relationships
         builder.Entity<UserPermission>()
             .HasKey(up => new { up.UserId, up.PermissionId });
 
@@ -63,6 +65,7 @@ public class ApplicationDbContext : IdentityDbContext<ApplicationUser, Applicati
             .WithMany(p => p.UserPermissions)
             .HasForeignKey(up => up.PermissionId);
 
+        // Configure Picture entity
         builder.Entity<Picture>(entity =>
         {
             entity.Property(e => e.MediaType)
@@ -72,8 +75,7 @@ public class ApplicationDbContext : IdentityDbContext<ApplicationUser, Applicati
                   .HasMaxLength(50);
         });
 
-        // New entities configurations
-
+        // Configure Product relationships
         builder.Entity<Product>()
             .HasMany(p => p.Categories)
             .WithMany(c => c.Products);
@@ -87,7 +89,7 @@ public class ApplicationDbContext : IdentityDbContext<ApplicationUser, Applicati
             .HasMany(p => p.Images)
             .WithOne(pi => pi.Product)
             .HasForeignKey(pi => pi.ProductId)
-            .OnDelete(DeleteBehavior.Restrict); // Resolve multiple cascade paths
+            .OnDelete(DeleteBehavior.Restrict); // Adjust DeleteBehavior as necessary
 
         builder.Entity<Product>()
             .HasMany(p => p.CustomerReviews)
@@ -105,6 +107,7 @@ public class ApplicationDbContext : IdentityDbContext<ApplicationUser, Applicati
             .WithOne()
             .HasForeignKey(qa => qa.ProductId);
 
+        // Configure RelatedProduct relationships
         builder.Entity<RelatedProduct>()
             .HasOne(rp => rp.MainProduct)
             .WithMany(p => p.RelatedProducts)
@@ -117,18 +120,18 @@ public class ApplicationDbContext : IdentityDbContext<ApplicationUser, Applicati
             .HasForeignKey(rp => rp.RelatedProductId)
             .OnDelete(DeleteBehavior.Restrict);
 
-        // Configure VariationType and VariationValue
+        // Configure VariationType and VariationValue relationships
         builder.Entity<VariationType>()
             .HasMany(vt => vt.VariationValues)
             .WithOne(vv => vv.VariationType)
             .HasForeignKey(vv => vv.VariationTypeId)
-            .OnDelete(DeleteBehavior.Cascade);
+            .OnDelete(DeleteBehavior.Cascade); // Cascade or Restrict based on your needs
 
         builder.Entity<Product>()
             .HasMany(p => p.VariationTypes)
             .WithMany(vt => vt.Products);
 
-        // Configure the many-to-many relationship between Product and VariationValue
+        // Configure ProductVariationValue relationships
         builder.Entity<ProductVariationValue>()
             .HasKey(pvv => new { pvv.ProductId, pvv.VariationValueId });
 
@@ -144,17 +147,6 @@ public class ApplicationDbContext : IdentityDbContext<ApplicationUser, Applicati
             .HasForeignKey(pvv => pvv.VariationValueId)
             .OnDelete(DeleteBehavior.Restrict); // Specify RESTRICT to avoid cycles
 
-        builder.Entity<VariationValue>()
-            .HasMany(vv => vv.Images)
-            .WithOne(pi => pi.VariationValue)
-            .HasForeignKey(pi => pi.VariationValueId)
-            .OnDelete(DeleteBehavior.Cascade);
-
-        // Modify the relationship causing the cycle
-        builder.Entity<VariationValue>()
-            .HasOne(vv => vv.Product)
-            .WithMany(p => p.VariationValues)
-            .HasForeignKey(vv => vv.ProductId)
-            .OnDelete(DeleteBehavior.NoAction); // Specify NO ACTION to avoid cycles
+        // End of OnModelCreating
     }
 }

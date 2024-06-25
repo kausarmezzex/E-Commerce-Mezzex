@@ -14,4 +14,5 @@ namespace E_Commerce_Mezzex.Models.Domain
         public ICollection<VariationValue> VariationValues { get; set; } = new List<VariationValue>();
         public ICollection<Product> Products { get; set; } = new List<Product>();
     }
+
 }

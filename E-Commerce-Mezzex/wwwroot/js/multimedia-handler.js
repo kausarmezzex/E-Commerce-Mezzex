@@ -1,10 +1,9 @@
 ﻿$(document).ready(function () {
-    var variationValueId = null; // Variable to store variationValueId
+    var variationValueId = null;
 
     // Handle form submission for VariationValue
     $("#VariationValueForm").on("submit", function (event) {
-        event.preventDefault(); // Prevent the default form submission
-
+        event.preventDefault();
         var formData = new FormData(this);
 
         $.ajax({
@@ -15,10 +14,7 @@
             contentType: false,
             success: function (response) {
                 if (response.success) {
-                    // Store the variationValueId
                     variationValueId = response.variationValueId;
-
-                    // Display success message with SweetAlert
                     Swal.fire({
                         icon: 'success',
                         title: 'Success',
@@ -26,15 +22,20 @@
                         timer: 2000,
                         showConfirmButton: false
                     }).then(() => {
-                        // Trigger the Save Images button click
+                        // Reset the form
+                        $("#VariationValueForm")[0].reset();
+
+                        // Append new variation to the list
+                        $('#variationList').append(`<li>${response.variationValueName} - ${response.variationType}</li>`); // Assuming 'name' is a property of VariationType
+
+                        // Automatically trigger the Save Images button click
                         $("#uploadAllImages").trigger("click");
                     });
                 } else {
-                    let errorMsg = response.message + '\n' + response.errors.join('\n');
                     Swal.fire({
                         icon: 'error',
                         title: 'Error',
-                        text: errorMsg
+                        text: response.message
                     });
                 }
             },
@@ -55,10 +56,13 @@
 
     function handleImageUpload(inputElement, imageTableBody) {
         let files = inputElement.files;
+        let productId = $('#productId').val();
+
         for (let i = 0; i < files.length; i++) {
             let data = new FormData();
             data.append('file', files[i]);
-            data.append('variationValueId', variationValueId); // Include variationValueId with each image upload
+            data.append('productId', productId);
+            data.append('variationValueId', variationValueId);
 
             let mediaType = files[i].type.startsWith('image') ? 'Image' : (files[i].type.startsWith('video') ? 'Video' : 'Unknown');
 
@@ -114,7 +118,7 @@
                 TitleAttribute: titleAttribute,
                 MediaType: mediaType,
                 ProductId: $('#productId').val(),
-                VariationValueId: variationValueId // Include variationValueId when saving image details
+                VariationValueId: variationValueId
             });
         });
 
@@ -124,13 +128,23 @@
             contentType: 'application/json',
             data: JSON.stringify(imageDetails),
             success: function () {
-                Swal.fire('Success', 'Images saved successfully.', 'success').then(() => {
-                    window.location.href = '/Products/Index';
+                Swal.fire({
+                    icon: 'success',
+                    title: 'Success',
+                    text: 'Images saved successfully.',
+                    timer: 2000,
+                    showConfirmButton: false
+                }).then(() => {
+                   /* window.location.href = '/Products/Index'; // Redirect to product index*/
                 });
             },
             error: function (xhr, status, error) {
                 console.error(xhr.responseText); // Log the error response for debugging
-                Swal.fire('Error', 'Error saving images.', 'error');
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Error',
+                    text: 'Error saving images.'
+                });
             }
         });
     });

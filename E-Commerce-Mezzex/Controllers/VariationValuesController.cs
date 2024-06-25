@@ -64,16 +64,48 @@ namespace E_Commerce_Mezzex.Controllers
         {
             if (!ModelState.IsValid)
             {
-                model.VariationValue.ProductId = model.ProductId; // Ensure ProductId is set in VariationValue
-                _context.Add(model.VariationValue);
-                await _context.SaveChangesAsync();
-                return Json(new { success = true, variationValueId = model.VariationValue.Id, message = "Variation value added successfully!" });
+                try
+                {
+                    // Ensure ProductId is set in VariationValue
+                    model.VariationValue.ProductId = model.ProductId;
+
+                    // Add VariationValue to context and save changes
+                    _context.Add(model.VariationValue);
+                    await _context.SaveChangesAsync();
+
+                    // Retrieve the full VariationType including its VariationValues
+                    // Retrieve the name of the VariationType based on its Id
+                    var variationTypeName = await _context.VariationTypes
+                        .Where(vt => vt.Id == model.VariationValue.VariationTypeId)
+                        .Select(vt => vt.Name)
+                        .FirstOrDefaultAsync();
+
+                    // Now variationTypeName contains the name of the VariationType
+
+
+                    // Return success response with the newly created VariationValue and its VariationType
+                    return Json(new
+                    {
+                        success = true,
+                        variationValueId = model.VariationValue.Id,
+                        variationValueName = model.VariationValue.Value,
+                        variationType = variationTypeName, // Include the VariationType and its associated VariationValues
+                        message = "Variation value added successfully!"
+                    });
+                }
+                catch (Exception ex)
+                {
+                    // Log exception if necessary
+                    Console.WriteLine($"Error occurred while saving VariationValue: {ex.Message}");
+                    ViewData["VariationTypeId"] = new SelectList(_context.VariationTypes, "Id", "Name", model.VariationValue.VariationTypeId);
+                    return Json(new { success = false, message = "An error occurred while saving the variation value." });
+                }
             }
 
-            ViewData["VariationTypeId"] = new SelectList(_context.VariationTypes, "Id", "Name"); // Ensure ViewBag is populated
+            // If ModelState is not valid, return validation error messages
+            ViewData["VariationTypeId"] = new SelectList(_context.VariationTypes, "Id", "Name", model.VariationValue.VariationTypeId);
             return Json(new { success = false, message = "Validation failed.", errors = ModelState.Values.SelectMany(v => v.Errors).Select(e => e.ErrorMessage).ToList() });
         }
-
 
         // GET: VariationValues/Edit/5
         public async Task<IActionResult> Edit(int? id)

@@ -98,7 +98,7 @@
         }
     });
 
- /*   // Handle variation tab click
+    // Handle variation tab click
     $('#custom-tabs-three-variation-tab').on('click', function (e) {
         if (!$('#productId').val()) {
             e.preventDefault();
@@ -110,5 +110,5 @@
             // Pass product ID to the Variation Value tab
             $('#custom-tabs-three-variation').data('productId', productId);
         }
-    });*/
+    });
 });
