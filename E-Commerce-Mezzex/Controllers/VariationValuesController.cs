@@ -67,10 +67,11 @@ namespace E_Commerce_Mezzex.Controllers
                 model.VariationValue.ProductId = model.ProductId; // Ensure ProductId is set in VariationValue
                 _context.Add(model.VariationValue);
                 await _context.SaveChangesAsync();
-                return Json(new { success = true, productId = model.ProductId});
+                return Json(new { success = true, variationValueId = model.VariationValue.Id, message = "Variation value added successfully!" });
             }
+
             ViewData["VariationTypeId"] = new SelectList(_context.VariationTypes, "Id", "Name"); // Ensure ViewBag is populated
-            return Json(new { success = false, message = "Validation failed.", errors = ModelState.Values.SelectMany(v => v.Errors) });
+            return Json(new { success = false, message = "Validation failed.", errors = ModelState.Values.SelectMany(v => v.Errors).Select(e => e.ErrorMessage).ToList() });
         }
 
 

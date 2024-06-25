@@ -4,16 +4,22 @@
     @Html.AntiForgeryToken()
     <input type="hidden" asp-for="ProductId" />
     <div class="form-group">
+        <label asp-for="VariationValue.VariationTypeId"></label>
+        <div class="input-group">
+            <select asp-for="VariationValue.VariationTypeId" class="form-control" asp-items="ViewBag.VariationTypes"></select>
+            <div class="input-group-append">
+                <button type="button" class="btn btn-outline-secondary" data-toggle="modal" data-target="#variationTypeModal">+</button>
+            </div>
+        </div>
+        <span asp-validation-for="VariationValue.VariationTypeId" class="text-danger"></span>
+    </div>
+    <div class="form-group">
         <label asp-for="VariationValue.Value"></label>
         <input asp-for="VariationValue.Value" class="form-control" />
         <span asp-validation-for="VariationValue.Value" class="text-danger"></span>
     </div>
-    <div class="form-group">
-        <label asp-for="VariationValue.VariationTypeId"></label>
-        <select asp-for="VariationValue.VariationTypeId" class="form-control" asp-items="ViewBag.VariationTypes"></select>
-        <span asp-validation-for="VariationValue.VariationTypeId" class="text-danger"></span>
-    </div>
-
+    
+    <button type="submit" class="btn btn-primary mb-3">Save</button> 
     <!-- Image Upload Section -->
     <div class="form-group mb-3">
         <label for="multipleImageUpload">Upload Images</label>
@@ -42,109 +48,39 @@
         </table>
         <button type="button" id="uploadAllImages" class="btn btn-primary">Save Images</button>
     </div>
-
-    <button type="submit" class="btn btn-primary">Save</button>
 </form>
+
+<div class="modal fade" id="variationTypeModal" tabindex="-1" role="dialog" aria-labelledby="variationTypeModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="variationTypeModalLabel">Create Variation Type</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <!-- VariationType Form inside Modal -->
+                <form id="variationTypeForm" asp-controller="VariationTypes" asp-action="Create" method="post">
+                    <div class="form-group">
+                        <label asp-for="VariationType.Name" class="control-label"></label>
+                        <input asp-for="VariationType.Name" class="form-control" />
+                        <span asp-validation-for="VariationType.Name" class="text-danger"></span>
+                    </div>
+                    <div class="form-group">
+                        <input type="submit" value="Create" class="btn btn-primary" />
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
 
 @section Scripts {
     <partial name="_ValidationScriptsPartial" />
-    <!-- Ensure Bootstrap JS is included -->
-    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
-    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+    <script src="~/lib/jquery/dist/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.13/js/select2.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@10"></script>
-    <script>
-        $(document).ready(function () {
-            // Handle image upload
-            $(document).on('change', '#multipleImageUpload', function () {
-                handleImageUploadVariations(this, $('#imageTableBody'));
-            });
-
-            function handleImageUploadVariations(inputElement, imageTableBody) {
-                let files = inputElement.files;
-                let productId = $('#ProductId').val(); // Get ProductId from hidden field
-                let variationValueId = $('#VariationValue_VariationValueId').val(); // Get VariationValueId from form
-
-                for (let i = 0; i < files.length; i++) {
-                    let data = new FormData();
-                    data.append('file', files[i]);
-                    data.append('productId', productId);
-                    data.append('variationValueId', variationValueId); // Pass VariationValueId along with image data
-
-                    let mediaType = files[i].type.startsWith('image') ? 'Image' : (files[i].type.startsWith('video') ? 'Video' : 'Unknown');
-
-                    $.ajax({
-                        url: '/api/images',
-                        type: 'POST',
-                        processData: false,
-                        contentType: false,
-                        data: data,
-                        success: function (result) {
-                            let row = `
-                                        <tr>
-                                            <td>
-                                                ${mediaType === 'Image' ? `<img src="${result.link}" style="width: 100px;" />` : `<video width="100" controls><source src="${result.link}" type="${files[i].type}"></video>`}
-                                            </td>
-                                            <td><input type="text" class="form-control seo-filename" /></td>
-                                            <td><input type="text" class="form-control alt-attribute" /></td>
-                                            <td><input type="text" class="form-control title-attribute" /></td>
-                                            <td><input type="text" class="form-control media-type" value="${mediaType}" readonly></td>
-                                            <td><input type="text" value="${result.link}" class="form-control image-url" readonly /></td>
-                                            <td>
-                                                <button type="button" class="btn btn-danger btn-sm delete-btn">Delete</button>
-                                            </td>
-                                        </tr>`;
-                            imageTableBody.append(row);
-                        },
-                        error: function () {
-                            Swal.fire('Error', 'Error uploading image.', 'error');
-                        }
-                    });
-                }
-            }
-
-            // Handle deleting image row
-            $(document).on('click', '.delete-btn', function () {
-                $(this).closest('tr').remove();
-            });
-
-            // Handle saving images
-            $(document).on('click', '#uploadAllImages', function () {
-                let imageDetails = [];
-                $('#imageTableBody tr').each(function () {
-                    let seoFilename = $(this).find('.seo-filename').val();
-                    let altAttribute = $(this).find('.alt-attribute').val();
-                    let titleAttribute = $(this).find('.title-attribute').val();
-                    let mediaType = $(this).find('.media-type').val();
-                    let imageUrl = $(this).find('.image-url').val();
-
-                    imageDetails.push({
-                        VirtualPath: imageUrl,
-                        SeoFilename: seoFilename,
-                        AltAttribute: altAttribute,
-                        TitleAttribute: titleAttribute,
-                        MediaType: mediaType,
-                        ProductId: productId,
-                        VariationValueId: variationValueId // Include VariationValueId in the image details
-                    });
-                });
-
-                $.ajax({
-                    url: '/api/ImagesDetails',
-                    type: 'POST',
-                    contentType: 'application/json',
-                    data: JSON.stringify(imageDetails),
-                    success: function () {
-                        Swal.fire('Success', 'Images saved successfully.', 'success').then(() => {
-                            // Optionally redirect to another page after saving
-                            // window.location.href = '/Products/Index';
-                        });
-                    },
-                    error: function (xhr, status, error) {
-                        console.error(xhr.responseText); // Log the error response for debugging
-                        Swal.fire('Error', 'Error saving images.', 'error');
-                    }
-                });
-            });
-        });
-    </script>
+    <script src="~/js/product-form.js"></script>
 }
+

@@ -1,0 +1,8 @@
+﻿@model E_Commerce_Mezzex.Models.ViewModel.VariationViewModel
+
+<tr id="variation-@Model.VariationValue.VariationTypeId">
+    <td>@Model.VariationValue.Value</td>
+    <td>
+        <button class="btn btn-sm btn-primary addImageBtn" data-variation-id="@Model.VariationValue.VariationTypeId">Add Image</button>
+    </td>
+</tr>

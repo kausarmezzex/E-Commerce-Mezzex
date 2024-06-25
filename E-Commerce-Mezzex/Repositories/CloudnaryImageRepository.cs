@@ -101,7 +101,5 @@ namespace E_Commerce_Mezzex.Repositories
         {
             return await dbContext.Pictures.FirstOrDefaultAsync(p => p.VirtualPath == url);
         }
-
-
     }
 }
