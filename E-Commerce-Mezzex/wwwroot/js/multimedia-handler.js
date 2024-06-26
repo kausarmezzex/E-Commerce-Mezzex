@@ -54,7 +54,7 @@
     $(document).on('change', '#multipleImageUpload', function () {
         handleImageUpload(this, $('#imageTableBody'));
     });
-
+   
     function handleImageUpload(inputElement, imageTableBody) {
         let files = inputElement.files;
         let productId = $('#productId').val();
@@ -136,7 +136,7 @@
                     timer: 2000,
                     showConfirmButton: false
                 }).then(() => {
-                   /* window.location.href = '/Products/Index'; // Redirect to product index*/
+                    /* window.location.href = '/Products/Index'; // Redirect to product index*/
                 });
             },
             error: function (xhr, status, error) {

@@ -1,6 +1,7 @@
 ﻿using E_Commerce_Mezzex.Models.Domain;
-using System.ComponentModel.DataAnnotations.Schema;
+using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace E_Commerce_Mezzex.Models.Domain
 {
@@ -22,7 +23,14 @@ namespace E_Commerce_Mezzex.Models.Domain
         public Product Product { get; set; }
 
         public ICollection<Picture> Images { get; set; } = new List<Picture>();
-
         public ICollection<ProductVariationValue> ProductVariationValues { get; set; } = new List<ProductVariationValue>();
+
+        // New attributes
+        [Required]
+        [Column(TypeName = "decimal(18,2)")]
+        public decimal PriceAdjustment { get; set; }
+
+        [Required]
+        public bool UsePercentage { get; set; }
     }
 }

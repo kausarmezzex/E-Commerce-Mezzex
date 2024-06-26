@@ -91,7 +91,7 @@ namespace E_Commerce_Mezzex.Controllers
                         .Where(vt => vt.Id == model.VariationValue.VariationTypeId)
                         .Select(vt => vt.Name)
                         .FirstOrDefaultAsync();
-                    TempData.Remove("ProductId"); // Clear TempData
+                    TempData.Clear();
                     return Json(new
                     {
                         success = true,

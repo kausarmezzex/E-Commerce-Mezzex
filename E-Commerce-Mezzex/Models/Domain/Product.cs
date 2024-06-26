@@ -13,7 +13,7 @@ namespace E_Commerce_Mezzex.Models.Domain
         public string SKU { get; set; }
         public List<int> CategoryId { get; set; } = new List<int>(); // Multiple Category IDs
         public ICollection<Category> Categories { get; set; } = new List<Category>();
-        public List<int>? RelatedProductId { get; set; }
+        public List<int>? RelatedProductId { get; set; } = new List<int>();
         public int BrandId { get; set; }
         public ICollection<Brand> Brands { get; set; } = new List<Brand>();
         public bool NotReturnable { get; set; }

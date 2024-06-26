@@ -13,6 +13,17 @@
         <select asp-for="VariationValue.VariationTypeId" class="form-control" asp-items="ViewBag.VariationTypeId"></select>
         <span asp-validation-for="VariationValue.VariationTypeId" class="text-danger"></span>
     </div>
+    <div class="form-group">
+        <label asp-for="VariationValue.PriceAdjustment" class="control-label"></label>
+        <input asp-for="VariationValue.PriceAdjustment" class="form-control" />
+        <span asp-validation-for="VariationValue.PriceAdjustment" class="text-danger"></span>
+    </div>
+
+    <div class="form-group">
+        <label asp-for="VariationValue.UsePercentage" class="control-label"></label>
+        <input asp-for="VariationValue.UsePercentage" class="form-control" type="checkbox" />
+        <span asp-validation-for="VariationValue.UsePercentage" class="text-danger"></span>
+    </div>
 
     <!-- Image Upload Section -->
     <div class="form-group mb-3">
