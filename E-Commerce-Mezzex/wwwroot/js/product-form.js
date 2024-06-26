@@ -44,7 +44,7 @@
             data: $.param(formData),
             success: function (response) {
                 if (response.success) {
-                    $('#productForm').append('<input type="hidden" id="productId" value="' + response.productId + '" />');
+                    $('#productForm').append('<input type="hidden" id="productId2" value="' + response.productId2 + '" />');
                     Swal.fire('Success', 'Product added successfully!', 'success').then(() => {
                         $('#custom-tabs-three-multimedia').html(`
                             <div class="form-group mb-3">
@@ -90,7 +90,17 @@
 
     // Handle multimedia tab click
     $('#custom-tabs-three-multimedia-tab').on('click', function (e) {
-        if (!$('#productId').val()) {
+        if (!$('#productId2').val()) {
+            e.preventDefault();
+            Swal.fire('Warning', 'Please add the product first.', 'warning').then(() => {
+                $('#custom-tabs-three-home-tab').tab('show');
+            });
+        }
+    });
+
+    // Handle variation tab click
+    $('#custom-tabs-three-variation-tab').on('click', function (e) {
+        if (!$('#productId2').val()) {
             e.preventDefault();
             Swal.fire('Warning', 'Please add the product first.', 'warning').then(() => {
                 $('#custom-tabs-three-home-tab').tab('show');

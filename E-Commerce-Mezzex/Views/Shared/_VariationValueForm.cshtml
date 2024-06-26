@@ -4,9 +4,7 @@
     int? productIdFromTempData = TempData["ProductId"] as int?;
 }
 
-@if (productIdFromTempData != null && productIdFromTempData != 0)
-{
-    <form id="VariationValueForm" asp-controller="VariationValues" asp-action="Create" method="post">
+<form id="VariationValueForm" asp-controller="VariationValues" asp-action="Create" method="post">
         @Html.AntiForgeryToken()
 
         <input type="hidden" id="productId" name="ProductId" value="@productIdFromTempData" />
@@ -60,13 +58,7 @@
             <button type="button" id="uploadAllImages" class="btn btn-primary">Save Images</button>
         </div>
     </form>
-}
-else
-{
-    <div class="d-flex align-content-center text-center display-3">
-        <p>Please Add Product First</p>
-    </div>
-}
+
 <!-- Modal for creating new VariationType -->
 <div class="modal fade" id="variationTypeModal" tabindex="-1" role="dialog" aria-labelledby="variationTypeModalLabel" aria-hidden="true">
     <!-- Modal content -->

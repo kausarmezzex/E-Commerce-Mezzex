@@ -29,7 +29,7 @@ namespace E_Commerce_Mezzex.Controllers
         [Authorize(Policy = "CreateProductPolicy")]
         [HttpGet]
         public async Task<IActionResult> Create()
-        {
+        { 
             ViewBag.VariationTypes = new SelectList(_context.VariationTypes, "Id", "Name");
             await PopulateViewData();
             return View(new Product());
