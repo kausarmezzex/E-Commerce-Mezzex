@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using E_Commerce_Mezzex.Models.Domain;
 using E_Commerce_Mezzex.Models.ViewModel;
+using Microsoft.CodeAnalysis;
 
 namespace E_Commerce_Mezzex.Controllers
 {
@@ -45,19 +46,33 @@ namespace E_Commerce_Mezzex.Controllers
             return View(variationValue);
         }
 
-        // GET: VariationValues/Create
-        public IActionResult Create(int productId)
+        [HttpGet]
+        public IActionResult CreateVariationValue()
         {
-            var model = new VariationViewModel
+            // Retrieve ProductId from TempData
+            if (TempData["ProductId"] != null)
             {
-                ProductId = productId,
-                VariationValue = new VariationValue { ProductId = productId }
-            };
-            ViewData["VariationTypeId"] = new SelectList(_context.VariationTypes, "Id", "Name");
-            return View(model);
+                int productId = (int)TempData["ProductId"];
+                ViewBag.ProductId = productId;
+
+                // Initialize your model if needed and return the view
+                var model = new VariationViewModel
+                {
+                    ProductId = productId, // Set the productId in your view model if necessary
+                    VariationValue = new VariationValue() // Initialize VariationValue or any other setup needed
+                };
+
+                ViewData["VariationTypeId"] = new SelectList(_context.VariationTypes, "Id", "Name", model.VariationValue.VariationTypeId);
+                return View(model);
+            }
+            else
+            {
+                // Redirect or handle the scenario where ProductId is not available
+                return RedirectToAction("Index", "Products");
+            }
         }
 
-        // POST: VariationValues/Create
+
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create(VariationViewModel model)
@@ -69,43 +84,35 @@ namespace E_Commerce_Mezzex.Controllers
                     // Ensure ProductId is set in VariationValue
                     model.VariationValue.ProductId = model.ProductId;
 
-                    // Add VariationValue to context and save changes
                     _context.Add(model.VariationValue);
                     await _context.SaveChangesAsync();
 
-                    // Retrieve the full VariationType including its VariationValues
-                    // Retrieve the name of the VariationType based on its Id
                     var variationTypeName = await _context.VariationTypes
                         .Where(vt => vt.Id == model.VariationValue.VariationTypeId)
                         .Select(vt => vt.Name)
                         .FirstOrDefaultAsync();
 
-                    // Now variationTypeName contains the name of the VariationType
-
-
-                    // Return success response with the newly created VariationValue and its VariationType
                     return Json(new
                     {
                         success = true,
                         variationValueId = model.VariationValue.Id,
                         variationValueName = model.VariationValue.Value,
-                        variationType = variationTypeName, // Include the VariationType and its associated VariationValues
+                        variationType = variationTypeName,
                         message = "Variation value added successfully!"
                     });
                 }
                 catch (Exception ex)
                 {
-                    // Log exception if necessary
                     Console.WriteLine($"Error occurred while saving VariationValue: {ex.Message}");
                     ViewData["VariationTypeId"] = new SelectList(_context.VariationTypes, "Id", "Name", model.VariationValue.VariationTypeId);
                     return Json(new { success = false, message = "An error occurred while saving the variation value." });
                 }
             }
 
-            // If ModelState is not valid, return validation error messages
             ViewData["VariationTypeId"] = new SelectList(_context.VariationTypes, "Id", "Name", model.VariationValue.VariationTypeId);
             return Json(new { success = false, message = "Validation failed.", errors = ModelState.Values.SelectMany(v => v.Errors).Select(e => e.ErrorMessage).ToList() });
         }
+
 
         // GET: VariationValues/Edit/5
         public async Task<IActionResult> Edit(int? id)

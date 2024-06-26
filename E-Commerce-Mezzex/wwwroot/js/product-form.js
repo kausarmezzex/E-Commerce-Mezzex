@@ -97,18 +97,4 @@
             });
         }
     });
-
-    // Handle variation tab click
-    $('#custom-tabs-three-variation-tab').on('click', function (e) {
-        if (!$('#productId').val()) {
-            e.preventDefault();
-            Swal.fire('Warning', 'Please add the product first.', 'warning').then(() => {
-                $('#custom-tabs-three-home-tab').tab('show');
-            });
-        } else {
-            let productId = $('#productId').val();
-            // Pass product ID to the Variation Value tab
-            $('#custom-tabs-three-variation').data('productId', productId);
-        }
-    });
 });

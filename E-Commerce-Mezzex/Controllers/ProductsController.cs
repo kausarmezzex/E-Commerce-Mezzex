@@ -50,12 +50,16 @@ namespace E_Commerce_Mezzex.Controllers
 
                 await _productRepository.UpdateAsync(product);
 
+                // Set productId in ViewBag
+                TempData["ProductId"] = product.Id;
+
                 return Json(new { success = true, productId = product.Id });
             }
 
             await PopulateViewData();
             return PartialView("Create", product);
         }
+
 
         private async Task AssignRelatedProductsToProduct(Product product)
         {

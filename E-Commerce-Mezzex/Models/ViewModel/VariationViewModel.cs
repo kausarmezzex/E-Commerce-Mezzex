@@ -6,6 +6,6 @@ namespace E_Commerce_Mezzex.Models.ViewModel
     {
         public VariationValue VariationValue { get; set; }
         public VariationType VariationType { get; set; }
-        public int ProductId { get; set; }  // Add this line
+        public int ProductId { get; set; }
     }
 }

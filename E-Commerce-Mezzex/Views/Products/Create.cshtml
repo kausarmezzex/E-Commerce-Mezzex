@@ -44,6 +44,7 @@
         <div class="tab-pane fade" id="custom-tabs-three-variation1" role="tabpanel" aria-labelledby="custom-tabs-three-variation1-tab">
             @await Html.PartialAsync("_AddVariationTypeModal", new E_Commerce_Mezzex.Models.Domain.VariationType())
         </div>
+
         <div class="tab-pane fade" id="custom-tabs-three-variation" role="tabpanel" aria-labelledby="custom-tabs-three-variation-tab">
             @await Html.PartialAsync("_VariationValueForm", new E_Commerce_Mezzex.Models.ViewModel.VariationViewModel { ProductId = Model.Id })
         </div>
@@ -59,8 +60,8 @@
     <script src="~/lib/jquery/dist/jquery.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.13/js/select2.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@10"></script>
-    <script src="~/js/product-form.js"></script>
     <script src="~/js/multimedia-handler.js"></script>
     <script src="~/js/variation-handler.js"></script>
-   
+    <script src="~/js/product-form.js"></script>
+  
 }

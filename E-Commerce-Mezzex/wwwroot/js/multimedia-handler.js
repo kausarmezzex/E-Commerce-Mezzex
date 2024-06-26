@@ -30,6 +30,7 @@
 
                         // Automatically trigger the Save Images button click
                         $("#uploadAllImages").trigger("click");
+                        $('#imageTableBody').empty(); // Clear image table
                     });
                 } else {
                     Swal.fire({

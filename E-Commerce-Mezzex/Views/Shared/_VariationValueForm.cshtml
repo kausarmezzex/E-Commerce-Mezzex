@@ -1,66 +1,72 @@
 ﻿@model E_Commerce_Mezzex.Models.ViewModel.VariationViewModel
 
-<form id="VariationValueForm" asp-controller="VariationValues" asp-action="Create" method="post">
-    @Html.AntiForgeryToken()
-    <input type="hidden" asp-for="ProductId" />
+@{
+    int? productIdFromTempData = TempData["ProductId"] as int?;
+}
 
-    <!-- VariationValue form fields -->
-    <div class="form-group">
-        <label asp-for="VariationValue.VariationTypeId"></label>
-        <!-- Select input for VariationTypeId -->
-        <div class="input-group">
-            <select asp-for="VariationValue.VariationTypeId" class="form-control" asp-items="ViewBag.VariationTypes"></select>
-            <div class="input-group-append">
-                <!-- Button to add new VariationType (if required) -->
-                <button type="button" class="btn btn-outline-secondary" data-toggle="modal" data-target="#variationTypeModal">+</button>
+@if (productIdFromTempData != null && productIdFromTempData != 0)
+{
+    <form id="VariationValueForm" asp-controller="VariationValues" asp-action="Create" method="post">
+        @Html.AntiForgeryToken()
+
+        <input type="hidden" id="productId" name="ProductId" value="@productIdFromTempData" />
+
+        <!-- VariationValue form fields -->
+        <div class="form-group">
+            <label asp-for="VariationValue.VariationTypeId"></label>
+            <div class="input-group">
+                <select asp-for="VariationValue.VariationTypeId" class="form-control" asp-items="ViewBag.VariationTypes"></select>
+            </div>
+            <span asp-validation-for="VariationValue.VariationTypeId" class="text-danger"></span>
+        </div>
+
+        <div class="form-group">
+            <label asp-for="VariationValue.Value"></label>
+            <input asp-for="VariationValue.Value" class="form-control" />
+            <span asp-validation-for="VariationValue.Value" class="text-danger"></span>
+        </div>
+
+        <button type="submit" class="btn btn-primary mb-3">Save</button>
+
+        <!-- Image upload section -->
+        <div class="form-group mb-3">
+            <label for="multipleImageUpload">Upload Images</label>
+            <div class="custom-file">
+                <input type="file" class="custom-file-input" id="multipleImageUpload" multiple>
+                <label class="custom-file-label" for="multipleImageUpload">Choose files</label>
             </div>
         </div>
-        <span asp-validation-for="VariationValue.VariationTypeId" class="text-danger"></span>
-    </div>
 
-    <div class="form-group">
-        <label asp-for="VariationValue.Value"></label>
-        <!-- Input for VariationValue -->
-        <input asp-for="VariationValue.Value" class="form-control" />
-        <span asp-validation-for="VariationValue.Value" class="text-danger"></span>
-    </div>
-
-    <!-- Button to submit VariationValue form -->
-    <button type="submit" class="btn btn-primary mb-3">Save</button>
-
-    <!-- Image upload section -->
-    <div class="form-group mb-3">
-        <label for="multipleImageUpload">Upload Images</label>
-        <div class="custom-file">
-            <input type="file" class="custom-file-input" id="multipleImageUpload" multiple>
-            <label class="custom-file-label" for="multipleImageUpload">Choose files</label>
+        <!-- Image Table to Display Uploaded Images -->
+        <div class="form-group mb-3">
+            <table class="table">
+                <!-- Table headers -->
+                <thead>
+                    <tr>
+                        <th>Image</th>
+                        <th>SEO Filename</th>
+                        <th>Alt Attribute</th>
+                        <th>Title Attribute</th>
+                        <th>URL</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <!-- Table body to append uploaded images -->
+                <tbody id="imageTableBody">
+                    <!-- Images will be appended here -->
+                </tbody>
+            </table>
+            <!-- Button to save uploaded images -->
+            <button type="button" id="uploadAllImages" class="btn btn-primary">Save Images</button>
         </div>
+    </form>
+}
+else
+{
+    <div class="d-flex align-content-center text-center display-3">
+        <p>Please Add Product First</p>
     </div>
-
-    <!-- Image Table to Display Uploaded Images -->
-    <div class="form-group mb-3">
-        <table class="table">
-            <!-- Table headers -->
-            <thead>
-                <tr>
-                    <th>Image</th>
-                    <th>SEO Filename</th>
-                    <th>Alt Attribute</th>
-                    <th>Title Attribute</th>
-                    <th>URL</th>
-                    <th>Actions</th>
-                </tr>
-            </thead>
-            <!-- Table body to append uploaded images -->
-            <tbody id="imageTableBody">
-                <!-- Images will be appended here -->
-            </tbody>
-        </table>
-        <!-- Button to save uploaded images -->
-        <button type="button" id="uploadAllImages" class="btn btn-primary">Save Images</button>
-    </div>
-</form>
-
+}
 <!-- Modal for creating new VariationType -->
 <div class="modal fade" id="variationTypeModal" tabindex="-1" role="dialog" aria-labelledby="variationTypeModalLabel" aria-hidden="true">
     <!-- Modal content -->
@@ -102,14 +108,13 @@
 </ul>
 
 @section Scripts {
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.13/js/select2.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@10"></script>
     <!-- Include partial validation scripts -->
     <partial name="_ValidationScriptsPartial" />
     <!-- Include jQuery library -->
     <script src="~/lib/jquery/dist/jquery.min.js"></script>
-    <!-- Include Select2 library -->
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.13/js/select2.min.js"></script>
-    <!-- Include SweetAlert2 library -->
-    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@10"></script>
     <!-- Include custom script for product form -->
     <script src="~/js/product-form.js"></script>
+    <script src="~/js/multimedia-handler.js"></script>
 }
