@@ -3,28 +3,28 @@
 @{
     int? productIdFromTempData = TempData["ProductId"] as int?;
 }
- <form id="VariationValueForm" asp-controller="VariationValues" asp-action="Create" method="post">
-        @Html.AntiForgeryToken()
+<form id="VariationValueForm" asp-controller="VariationValues" asp-action="Create" method="post">
+    @Html.AntiForgeryToken()
 
-        <input type="hidden" id="productId" name="ProductId" value="@productIdFromTempData" />
+    <input type="hidden" id="productId" name="ProductId" value="@productIdFromTempData" />
 
-        <!-- VariationValue form fields -->
-        <div class="form-group">
-            <label asp-for="VariationValue.VariationTypeId"></label>
-            <div class="input-group">
-                <select asp-for="VariationValue.VariationTypeId" class="form-control" asp-items="ViewBag.VariationTypes"></select>
+    <!-- VariationValue form fields -->
+    <div class="form-group">
+        <label asp-for="VariationValue.VariationTypeId"></label>
+        <div class="input-group">
+            <select asp-for="VariationValue.VariationTypeId" class="form-control" asp-items="ViewBag.VariationTypes"></select>
             <div class="input-group-append">
                 <button type="button" class="btn btn-outline-secondary" data-toggle="modal" data-target="#variationTypeModal">+</button>
             </div>
-            </div>
-            <span asp-validation-for="VariationValue.VariationTypeId" class="text-danger"></span>
         </div>
+        <span asp-validation-for="VariationValue.VariationTypeId" class="text-danger"></span>
+    </div>
 
-        <div class="form-group">
-            <label asp-for="VariationValue.Value"></label>
-            <input asp-for="VariationValue.Value" class="form-control" />
-            <span asp-validation-for="VariationValue.Value" class="text-danger"></span>
-        </div>
+    <div class="form-group">
+        <label asp-for="VariationValue.Value"></label>
+        <input asp-for="VariationValue.Value" class="form-control" />
+        <span asp-validation-for="VariationValue.Value" class="text-danger"></span>
+    </div>
     <div class="form-group">
         <label asp-for="VariationValue.PriceAdjustment" class="control-label"></label>
         <div class="input-group">
@@ -41,40 +41,40 @@
         <label for="UsePercentage" class="custom-control-label">Price adjustment. Use percentage</label>
         <span asp-validation-for="VariationValue.UsePercentage" class="text-danger"></span>
     </div>
-        <button type="submit" class="btn btn-primary mb-3 mt-3">Save</button>
+    <button type="submit" class="btn btn-primary mb-3 mt-3">Save</button>
 
-        <!-- Image upload section -->
-        <div class="form-group mb-3">
-            <label for="multipleImageUpload">Upload Images</label>
-            <div class="custom-file">
-                <input type="file" class="custom-file-input" id="multipleImageUpload" multiple>
-                <label class="custom-file-label" for="multipleImageUpload">Choose files</label>
-            </div>
+    <!-- Image upload section -->
+    <div class="form-group mb-3">
+        <label for="multipleImageUpload">Upload Images</label>
+        <div class="custom-file">
+            <input type="file" class="custom-file-input" id="multipleImageUpload" multiple>
+            <label class="custom-file-label" for="multipleImageUpload">Choose files</label>
         </div>
+    </div>
 
-        <!-- Image Table to Display Uploaded Images -->
-        <div class="form-group mb-3">
-            <table class="table">
-                <!-- Table headers -->
-                <thead>
-                    <tr>
-                        <th>Image</th>
-                        <th>SEO Filename</th>
-                        <th>Alt Attribute</th>
-                        <th>Title Attribute</th>
-                        <th>URL</th>
-                        <th>Actions</th>
-                    </tr>
-                </thead>
-                <!-- Table body to append uploaded images -->
-                <tbody id="imageTableBody">
-                    <!-- Images will be appended here -->
-                </tbody>
-            </table>
-            <!-- Button to save uploaded images -->
-            <button type="button" id="uploadAllImages" class="btn btn-primary">Save Images</button>
-        </div>
-    </form>
+    <!-- Image Table to Display Uploaded Images -->
+    <div class="form-group mb-3">
+        <table class="table">
+            <!-- Table headers -->
+            <thead>
+                <tr>
+                    <th>Image</th>
+                    <th>SEO Filename</th>
+                    <th>Alt Attribute</th>
+                    <th>Title Attribute</th>
+                    <th>URL</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <!-- Table body to append uploaded images -->
+            <tbody id="imageTableBody">
+                <!-- Images will be appended here -->
+            </tbody>
+        </table>
+        <!-- Button to save uploaded images -->
+        <button type="button" id="uploadAllImages" class="btn btn-primary">Save Images</button>
+    </div>
+</form>
 
 
 <!-- Modal for creating new VariationType -->
@@ -94,27 +94,27 @@
             <div class="modal-body">
                 <!-- VariationType Form inside Modal -->
                 <form id="variationTypeForm" asp-controller="VariationTypes" asp-action="Create" method="post">
-            @Html.AntiForgeryToken()
+                    @Html.AntiForgeryToken()
 
-            <div class="form-group">
-                <label asp-for="VariationType.Name" class="control-label"></label>
+                    <div class="form-group">
+                        <label asp-for="VariationType.Name" class="control-label"></label>
                         <input asp-for="VariationType.Name" class="form-control" />
                         <span asp-validation-for="VariationType.Name" class="text-danger"></span>
-            </div>
+                    </div>
 
-            <div class="form-group">
+                    <div class="form-group">
                         <label asp-for="VariationType.ControlType" class="control-label"></label>
                         <select asp-for="VariationType.ControlType" class="form-control">
-                    @foreach (var controlType in Enum.GetValues(typeof(E_Commerce_Mezzex.Models.Domain.ControlType)))
-                    {
-                        <option value="@((int)controlType)">@controlType</option>
-                    }
-                </select>
+                            @foreach (var controlType in Enum.GetValues(typeof(E_Commerce_Mezzex.Models.Domain.ControlType)))
+                            {
+                                <option value="@((int)controlType)">@controlType</option>
+                            }
+                        </select>
                         <span asp-validation-for="VariationType.ControlType" class="text-danger"></span>
-            </div>
+                    </div>
 
-            <button type="submit" class="btn btn-primary">Save</button>
-        </form>
+                    <button type="submit" class="btn btn-primary">Save</button>
+                </form>
             </div>
         </div>
     </div>

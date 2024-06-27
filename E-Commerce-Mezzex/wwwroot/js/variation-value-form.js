@@ -1,53 +1,66 @@
 ﻿$(document).ready(function () {
-    var variationValueId = null;
+    // Handle adding variation value to the table
+    $('#addVariationValue').on('click', function (e) {
+        e.preventDefault();
 
-    // Handle form submission for VariationValue
-    $("#VariationValueForm").on("submit", function (event) {
-        event.preventDefault();
-        var formData = new FormData(this);
+        // Get values from the form
+        var variationValue = $('#VariationValue_Value').val();
+        var variationType = $('#VariationValue_VariationTypeId option:selected').text();
+        var variationTypeId = $('#VariationValue_VariationTypeId').val();
+
+        // Check if values are not empty
+        if (!variationValue || !variationTypeId) {
+            Swal.fire('Error', 'Please provide a variation value and type.', 'error');
+            return;
+        }
+
+        // Append new row to the table
+        var newRow = `
+            <tr>
+                <td>${variationValue}</td>
+                <td>${variationType}</td>
+                <td>
+                    <button type="button" class="btn btn-success save-variation-value" data-value="${variationValue}" data-typeid="${variationTypeId}">Save to DB</button>
+                    <button type="button" class="btn btn-primary add-image" data-value="${variationValue}" data-typeid="${variationTypeId}">Add Image</button>
+                </td>
+            </tr>`;
+
+        $('#variationValueTableBody').append(newRow);
+    });
+
+    // Handle Save to DB button click
+    $('#variationValueTableBody').on('click', '.save-variation-value', function () {
+        var button = $(this);
+        var value = button.data('value');
+        var typeId = button.data('typeid');
 
         $.ajax({
-            url: $(this).attr("action"),
-            type: $(this).attr("method"),
-            data: formData,
-            processData: false,
-            contentType: false,
+            url: '/VariationValues/Create',
+            type: 'POST',
+            data: {
+                VariationValue: {
+                    Value: value,
+                    VariationTypeId: typeId,
+                    ProductId: $('#ProductId').val()
+                }
+            },
             success: function (response) {
                 if (response.success) {
-                    variationValueId = response.variationValueId;
-                    Swal.fire({
-                        icon: 'success',
-                        title: 'Success',
-                        text: response.message,
-                        timer: 2000,
-                        showConfirmButton: false
-                    }).then(() => {
-                        // Reset the form
-                        $("#VariationValueForm")[0].reset();
-
-                        // Append new variation to the list
-                        $('#variationList').append(`<li>${response.variationValueName} - ${response.variationType}</li>`); // Assuming 'name' is a property of VariationType
-
-                        // Automatically trigger the Save Images button click
-                        $("#uploadAllImages").trigger("click");
-                        $('#imageTableBody').empty(); // Clear image table
-                    });
+                    Swal.fire('Success', 'Variation Value saved successfully!', 'success');
                 } else {
-                    Swal.fire({
-                        icon: 'error',
-                        title: 'Error',
-                        text: response.message
-                    });
+                    Swal.fire('Error', response.message, 'error');
                 }
             },
             error: function (xhr, status, error) {
-                Swal.fire({
-                    icon: 'error',
-                    title: 'Error',
-                    text: 'An error occurred while submitting the form. Please try again.'
-                });
+                console.error(xhr.responseText);
+                Swal.fire('Error', 'An error occurred while saving the Variation Value.', 'error');
             }
         });
+    });
+
+    // Handle Add Image button click
+    $('#variationValueTableBody').on('click', '.add-image', function () {
+        $('#imageUploadSection').show();
     });
 
     // Handle image upload
@@ -57,13 +70,11 @@
 
     function handleImageUpload(inputElement, imageTableBody) {
         let files = inputElement.files;
-        let productId = $('#productId').val();
-
+        let productId = $('#ProductId').val();
         for (let i = 0; i < files.length; i++) {
             let data = new FormData();
             data.append('file', files[i]);
             data.append('productId', productId);
-            data.append('variationValueId', variationValueId);
 
             let mediaType = files[i].type.startsWith('image') ? 'Image' : (files[i].type.startsWith('video') ? 'Video' : 'Unknown');
 
@@ -102,8 +113,8 @@
         $(this).closest('tr').remove();
     });
 
-    // Handle saving all images
-    $(document).on('click', '#uploadAllImages', function () {
+    // Handle Save Images button click
+    $('#uploadAllImages').on('click', function () {
         let imageDetails = [];
         $('#imageTableBody tr').each(function () {
             let seoFilename = $(this).find('.seo-filename').val();
@@ -118,8 +129,7 @@
                 AltAttribute: altAttribute,
                 TitleAttribute: titleAttribute,
                 MediaType: mediaType,
-                ProductId: $('#productId').val(),
-                VariationValueId: variationValueId
+                ProductId: $('#ProductId').val()
             });
         });
 
@@ -129,23 +139,13 @@
             contentType: 'application/json',
             data: JSON.stringify(imageDetails),
             success: function () {
-                Swal.fire({
-                    icon: 'success',
-                    title: 'Success',
-                    text: 'Images saved successfully.',
-                    timer: 2000,
-                    showConfirmButton: false
-                }).then(() => {
-                    /* window.location.href = '/Products/Index'; // Redirect to product index*/
+                Swal.fire('Success', 'Images saved successfully.', 'success').then(() => {
+                    window.location.href = '/Products/Index';
                 });
             },
             error: function (xhr, status, error) {
                 console.error(xhr.responseText); // Log the error response for debugging
-                Swal.fire({
-                    icon: 'error',
-                    title: 'Error',
-                    text: 'Error saving images.'
-                });
+                Swal.fire('Error', 'Error saving images.', 'error');
             }
         });
     });

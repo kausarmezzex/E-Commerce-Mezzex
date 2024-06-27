@@ -14,7 +14,7 @@
         placeholder: 'Select Categories',
         allowClear: true
     });
-    
+
     $('#productForm').on('submit', function (e) {
         e.preventDefault();
 
@@ -87,7 +87,7 @@
             }
         });
     });
-
+   
     // Handle multimedia tab click
     $('#custom-tabs-three-multimedia-tab').on('click', function (e) {
         if (!$('#productId').val()) {
@@ -97,7 +97,6 @@
             });
         }
     });
-
     $('#custom-tabs-three-variation-tab').on('click', function (e) {
         if (!$('#productId').val()) {
             e.preventDefault();
@@ -106,5 +105,4 @@
             });
         }
     });
-   
 });

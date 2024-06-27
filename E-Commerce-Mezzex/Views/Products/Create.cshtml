@@ -45,7 +45,7 @@
             @await Html.PartialAsync("_AddVariationTypeModal", new E_Commerce_Mezzex.Models.Domain.VariationType())
         </div>
         <div class="tab-pane fade" id="custom-tabs-three-variation" role="tabpanel" aria-labelledby="custom-tabs-three-variation-tab">
-             @await Html.PartialAsync("_VariationValueForm", new E_Commerce_Mezzex.Models.ViewModel.VariationViewModel { ProductId = Model.Id })
+            @await Html.PartialAsync("_VariationValueForm", new E_Commerce_Mezzex.Models.ViewModel.VariationViewModel { ProductId = Model.Id })
         </div>
     </div>
 </form>
