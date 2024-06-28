@@ -41,5 +41,10 @@ namespace E_Commerce_Mezzex.Models.Domain
         public ICollection<VariationType> VariationTypes { get; set; } = new List<VariationType>();
         public ICollection<VariationValue> VariationValues { get; set; } = new List<VariationValue>();
         public ICollection<ProductVariationValue> ProductVariationValues { get; set; } = new List<ProductVariationValue>();
+
+        // Properties for paired product
+        public int? PairedProductId { get; set; }
+        public decimal? PairDiscount { get; set; }
+        public virtual Product? PairedProduct { get; set; }
     }
 }

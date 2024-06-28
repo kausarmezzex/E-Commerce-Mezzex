@@ -10,7 +10,7 @@
     <!-- Category Settings Section -->
     <div class="form-group section category-section">
         <h3 class="section-title">Category Settings</h3>
-        <table class="table table-striped">
+        <table id="categoryTable" class="table table-striped">
             <thead>
                 <tr>
                     <th>Name</th>
@@ -42,7 +42,7 @@
     <!-- Brand Settings Section -->
     <div class="form-group section brand-section">
         <h3 class="section-title">Brand Settings</h3>
-        <table class="table table-striped">
+        <table id="brandTable" class="table table-striped">
             <thead>
                 <tr>
                     <th>Name</th>
@@ -72,7 +72,7 @@
     <!-- Product Settings Section -->
     <div class="form-group section product-section">
         <h3 class="section-title">Product Settings</h3>
-        <table class="table table-striped">
+        <table id="productTable" class="table table-striped">
             <thead>
                 <tr>
                     <th>Name</th>
@@ -110,8 +110,16 @@
 </div>
 
 @section Scripts {
+    <script src="https://cdn.datatables.net/1.10.24/js/jquery.dataTables.min.js"></script>
+    <script src="https://cdn.datatables.net/1.10.24/js/dataTables.bootstrap4.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <script>
+        $(document).ready(function () {
+            $('#categoryTable').DataTable();
+            $('#brandTable').DataTable();
+            $('#productTable').DataTable();
+        });
+
         document.querySelectorAll('.edit-btn').forEach(button => {
             button.addEventListener('click', async function () {
                 const type = this.getAttribute('data-type');
@@ -179,62 +187,62 @@
     </script>
 }
 
-<style>
-    /* Style for all sections */
-    .section {
-        background-color: #f8f9fa; /* Light gray background */
-        border: 1px solid #ced4da; /* Gray border */
-        border-radius: 5px; /* Rounded corners */
-        padding: 20px; /* Add some padding */
-        margin-bottom: 20px; /* Add some margin */
-    }
-
-    /* Different background colors for different sections */
-    .brand-section {
-        background-color: #e9ecef; /* Lighter gray background */
-    }
-
-    .product-section {
-        background-color: #ffffff; /* White background */
-    }
-
-    /* Style for table headers */
-    .table thead th {
-        background-color: #343a40; /* Dark background for headers */
-        color: #ffffff; /* White text for headers */
-        border: 1px solid #dee2e6; /* Border for header cells */
-    }
-
-    /* Style for table rows */
-    .table tbody tr:nth-child(odd) {
-        background-color: #f8f9fa; /* Light gray background for odd rows */
-    }
-
-    .table tbody tr:nth-child(even) {
-        background-color: #ffffff; /* White background for even rows */
-    }
-
-    /* Style for buttons */
-    .btn {
-        margin-left: 5px; /* Space between buttons */
-    }
-
-    .btn-secondary {
-        background-color: #6c757d; /* Bootstrap secondary button color */
-        border-color: #6c757d;
-    }
-
-        .btn-secondary:hover {
-            background-color: #5a6268; /* Darker shade on hover */
-            border-color: #545b62;
+    <style>
+        /* Style for all sections */
+        .section {
+            background-color: #f8f9fa; /* Light gray background */
+            border: 1px solid #ced4da; /* Gray border */
+            border-radius: 5px; /* Rounded corners */
+            padding: 20px; /* Add some padding */
+            margin-bottom: 20px; /* Add some margin */
         }
 
-    .text-right {
-        text-align: right;
-    }
+        /* Different background colors for different sections */
+        .brand-section {
+            background-color: #e9ecef; /* Lighter gray background */
+        }
 
-    /* Increase container width */
-    .container-wide {
-        max-width: 100%; /* Increase the max-width */
-    }
-</style>
+        .product-section {
+            background-color: #ffffff; /* White background */
+        }
+
+        /* Style for table headers */
+        .table thead th {
+            background-color: #343a40; /* Dark background for headers */
+            color: #ffffff; /* White text for headers */
+            border: 1px solid #dee2e6; /* Border for header cells */
+        }
+
+        /* Style for table rows */
+        .table tbody tr:nth-child(odd) {
+            background-color: #f8f9fa; /* Light gray background for odd rows */
+        }
+
+        .table tbody tr:nth-child(even) {
+            background-color: #ffffff; /* White background for even rows */
+        }
+
+        /* Style for buttons */
+        .btn {
+            margin-left: 5px; /* Space between buttons */
+        }
+
+        .btn-secondary {
+            background-color: #6c757d; /* Bootstrap secondary button color */
+            border-color: #6c757d;
+        }
+
+            .btn-secondary:hover {
+                background-color: #5a6268; /* Darker shade on hover */
+                border-color: #545b62;
+            }
+
+        .text-right {
+            text-align: right;
+        }
+
+        /* Increase container width */
+        .container-wide {
+            max-width: 100%; /* Increase the max-width */
+        }
+    </style>

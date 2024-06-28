@@ -14,9 +14,10 @@
         <a class="nav-link" id="custom-tabs-three-seo-tab" data-toggle="pill" href="#custom-tabs-three-seo" role="tab" aria-controls="custom-tabs-three-seo" aria-selected="false">SEO Information</a>
     </li>
     <li class="nav-item">
-        <a class="nav-link" id="custom-tabs-three-related-products-tab" data-toggle="pill" href="#custom-tabs-three-related-products" role="tab" aria-controls="custom-tabs-three-related-products" aria-selected="false">Select Relationships</a>
+        <a class="nav-link" id="custom-tabs-three-paired-products-tab" data-toggle="pill" href="#custom-tabs-three-paired-products" role="tab" aria-controls="custom-tabs-three-paired-products" aria-selected="false">Paired Products</a>
     </li>
-
+    <li class="nav-item">
+        <a class="nav-link" id="custom-tabs-three-related-products-tab" data-toggle="pill" href="#custom-tabs-three-related-products" role="tab" aria-controls="custom-tabs-three-related-products" aria-selected="false">Select Relationships</a>
     </li>
     <li class="nav-item">
         <a class="nav-link" id="custom-tabs-three-multimedia-tab" data-toggle="pill" href="#custom-tabs-three-multimedia" role="tab" aria-controls="custom-tabs-three-multimedia" aria-selected="false">Multimedia</a>
@@ -37,6 +38,9 @@
         <div class="tab-pane fade" id="custom-tabs-three-seo" role="tabpanel" aria-labelledby="custom-tabs-three-seo-tab">
             @await Html.PartialAsync("_SEOInformation", Model)
         </div>
+        <div class="tab-pane fade" id="custom-tabs-three-paired-products" role="tabpanel" aria-labelledby="custom-tabs-three-paired-products-tab">
+            @await Html.PartialAsync("_PairedProducts", Model)
+        </div>
         <div class="tab-pane fade" id="custom-tabs-three-related-products" role="tabpanel" aria-labelledby="custom-tabs-three-related-products-tab">
             @await Html.PartialAsync("_RelatedProducts", Model)
         </div>
@@ -55,35 +59,20 @@
 <div>
     <a asp-action="Index" class="btn btn-secondary mt-3 mb-3">Back to List</a>
 </div>
-
 @section Scripts {
     <partial name="_ValidationScriptsPartial" />
-    <script src="~/js/multimedia-handler.js"></script>
-
-    <script src="~/js/variation-handler.js"></script>
     <script src="~/js/product-form.js"></script>
+    <script src="~/js/multimedia-handler.js"></script>
+    <script src="~/js/variation-handler.js"></script>
     <script>
         $(document).ready(function () {
             $('#relatedProductsTable').DataTable({
                 "paging": true,
-                "lengthChange": true,
                 "searching": true,
                 "ordering": true,
-                "info": true,
-                "autoWidth": false,
-                "responsive": true,
-                "language": {
-                    "paginate": {
-                        "previous": "Previous",
-                        "next": "Next"
-                    }
-                },
-                "order": [[1, 'asc']], // Default sorting on the second column (Product Name) in ascending order
-                "columnDefs": [
-                    { "orderable": true, "targets": [1] }, // Enable sorting on the Product Name column
-                    { "orderable": false, "targets": [0, 2] } // Disable sorting on Select and Publish Status columns
-                ]
+                "info": true
             });
         });
     </script>
 }
+

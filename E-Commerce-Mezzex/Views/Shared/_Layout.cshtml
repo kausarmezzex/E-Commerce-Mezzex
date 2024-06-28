@@ -12,6 +12,7 @@
     <link rel="stylesheet" href="~/Admin/plugins/fontawesome-free/css/all.min.css">
     <!-- Ionicons -->
     <link rel="stylesheet" href="https://code.ionicframework.com/ionicons/2.0.1/css/ionicons.min.css">
+    <link rel="stylesheet" href="https://cdn.datatables.net/1.10.24/css/jquery.dataTables.min.css">
     <!-- Tempusdominus Bootstrap 4 -->
     <link rel="stylesheet" href="~/Admin/plugins/tempusdominus-bootstrap-4/css/tempusdominus-bootstrap-4.min.css">
     <!-- iCheck -->
@@ -26,6 +27,9 @@
     <link rel="stylesheet" href="~/Admin/plugins/daterangepicker/daterangepicker.css">
     <!-- summernote -->
     <link rel="stylesheet" href="~/Admin/plugins/summernote/summernote-bs4.min.css">
+        <!-- Add these in your HTML head section -->
+        <link rel="stylesheet" href="https://code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
+
     <link href='https://cdn.jsdelivr.net/npm/froala-editor@3.2.6/css/froala_editor.pkgd.min.css' rel='stylesheet' type='text/css' />
     <link href="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.13/css/select2.min.css" rel="stylesheet" />
 </head>
@@ -212,10 +216,10 @@
                 </div>
 
                 <!-- Sidebar Menu -->
+                <!-- Sidebar Menu -->
                 <nav class="mt-2">
                     <ul class="nav nav-pills nav-sidebar flex-column" data-widget="treeview" role="menu" data-accordion="false">
-                        <!-- Add icons to the links using the .nav-icon class
-                             with font-awesome or any other icon font library -->
+                        <!-- Add icons to the links using the .nav-icon class with font-awesome or any other icon font library -->
                         <li class="nav-item menu-open">
                             <a asp-area="" asp-controller="Home" asp-action="Index" class="nav-link active">
                                 <i class="nav-icon fas fa-tachometer-alt"></i>
@@ -230,72 +234,63 @@
                                     <i class="fas fa-angle-left right"></i>
                                 </p>
                             </a>
-                            @if (User.Identity.IsAuthenticated)
+                            @if (User.Identity.IsAuthenticated && (User.IsInRole("Admin") || User.IsInRole("Administrator")))
                             {
-                                if (User.IsInRole("Admin") || User.IsInRole("Administrator"))
+                                <ul class="nav nav-treeview">
+                                    @* Iterate through a list of items to avoid repetition *@
+                                    @{
+                                        var catalogItems = new List<(string Controller, string Action, string Icon, string Text)>
                                 {
-                                    <ul class="nav nav-treeview">
-                                        <li class="nav-item">
-                                            <a asp-area="" asp-controller="Categories" asp-action="Create" class="nav-link">
-                                                <i class="far fa-circle nav-icon"></i>
-                                                <p>Create Category</p>
-                                            </a>
-                                        </li>
-                                        <li class="nav-item">
-                                            <a asp-area="" asp-controller="Brands" asp-action="Create" class="nav-link">
-                                                <i class="far fa-circle nav-icon"></i>
-                                                <p>Create Brand</p>
-                                            </a>
-                                        </li>
-                                        <li class="nav-item">
-                                            <a asp-area="" asp-controller="Products" asp-action="Create" class="nav-link">
-                                                <i class="far fa-circle nav-icon"></i>
-                                                <p>Create Product</p>
-                                            </a>
-                                        </li>
-                                        <li class="nav-item">
-                                            <a asp-controller="QuestionAnswers" asp-action="Create" class="nav-link">
-                                                <i class="far fa-circle nav-icon"></i>
-                                                <p>Add Questions</p>
-                                            </a>
-                                        </li>
-                                    </ul>
-                                }
+                                ("Products", "Create", "far fa-circle", "Create Product"),
+                                ("Categories", "Create", "far fa-circle", "Create Category"),
+                                ("Brands", "Create", "far fa-circle", "Create Brand"),
+                                ("QuestionAnswers", "Create", "far fa-circle", "Add Questions"),
+                                ("VariationTypes", "Create", "far fa-circle", "Attribute Type")
+                                };
+
+                                        foreach (var item in catalogItems)
+                                        {
+                                            <li class="nav-item">
+                                                <a asp-controller="@item.Controller" asp-action="@item.Action" class="nav-link">
+                                                    <i class="@item.Icon nav-icon"></i>
+                                                    <p>@item.Text</p>
+                                                </a>
+                                            </li>
+                                        }
+                                    }
+                                </ul>
                             }
                         </li>
                         <li class="nav-item">
                             <a href="#" class="nav-link">
-                                <i class="nav-icon fas fa-users "></i>
+                                <i class="nav-icon fas fa-users"></i>
                                 <p>
                                     Customers
                                     <i class="fas fa-angle-left right"></i>
                                 </p>
                             </a>
-                            @if (User.Identity.IsAuthenticated)
+                            @if (User.Identity.IsAuthenticated && (User.IsInRole("Admin") || User.IsInRole("Administrator")))
                             {
-                                if (User.IsInRole("Admin") || User.IsInRole("Administrator"))
+                                <ul class="nav nav-treeview">
+                                    @{
+                                        var customerItems = new List<(string Controller, string Action, string Icon, string Text)>
                                 {
-                                    <ul class="nav nav-treeview">
-                                        <li class="nav-item">
-                                            <a asp-area="" asp-controller="Account" asp-action="Register" class="nav-link">
-                                                <i class="far fa-circle nav-icon"></i>
-                                                <p>Add Customers</p>
-                                            </a>
-                                        </li>
-                                        <li class="nav-item">
-                                            <a asp-controller="UserRoles" asp-action="CreateRole" class="nav-link">
-                                                <i class="far fa-circle nav-icon"></i>
-                                                <p>Create Role</p>
-                                            </a>
-                                        </li>
-                                        <li class="nav-item">
-                                            <a asp-controller="UserRoles" asp-action="Index" class="nav-link">
-                                                <i class="far fa-circle nav-icon"></i>
-                                                <p>Manage Roles</p>
-                                            </a>
-                                        </li>
-                                    </ul>
-                                }
+                                ("Account", "Register", "far fa-circle", "Add Customers"),
+                                ("UserRoles", "CreateRole", "far fa-circle", "Create Role"),
+                                ("UserRoles", "Index", "far fa-circle", "Manage Roles")
+                                };
+
+                                        foreach (var item in customerItems)
+                                        {
+                                            <li class="nav-item">
+                                                <a asp-controller="@item.Controller" asp-action="@item.Action" class="nav-link">
+                                                    <i class="@item.Icon nav-icon"></i>
+                                                    <p>@item.Text</p>
+                                                </a>
+                                            </li>
+                                        }
+                                    }
+                                </ul>
                             }
                         </li>
                         <li class="nav-item">
@@ -306,31 +301,32 @@
                                     <i class="fas fa-angle-left right"></i>
                                 </p>
                             </a>
-                            @if (User.Identity.IsAuthenticated)
+                            @if (User.Identity.IsAuthenticated && (User.IsInRole("Admin") || User.IsInRole("Administrator")))
                             {
-                                if (User.IsInRole("Admin") || User.IsInRole("Administrator"))
+                                <ul class="nav nav-treeview">
+                                    @{
+                                        var configItems = new List<(string Controller, string Action, string Icon, string Text)>
                                 {
-                                    <ul class="nav nav-treeview">
-                                        <li class="nav-item">
-                                            <a asp-controller="Admin" asp-action="ManageRolePermissions" class="nav-link">
-                                                <i class="far fa-circle nav-icon"></i>
-                                                <p>
-                                                    Access control list
-                                                </p>
-                                            </a>
-                                        </li>
-                                        <li class="nav-item">
-                                            <a asp-controller="Settings" asp-action="Index" class="nav-link">
-                                                <i class="far fa-circle nav-icon"></i>
-                                                <p>Page View Settings</p>
-                                            </a>
-                                        </li>
-                                    </ul>
-                                }
+                                ("Admin", "ManageRolePermissions", "far fa-circle", "Access Control List"),
+                                ("Settings", "Index", "far fa-circle", "Page View Settings")
+                                };
+
+                                        foreach (var item in configItems)
+                                        {
+                                            <li class="nav-item">
+                                                <a asp-controller="@item.Controller" asp-action="@item.Action" class="nav-link">
+                                                    <i class="@item.Icon nav-icon"></i>
+                                                    <p>@item.Text</p>
+                                                </a>
+                                            </li>
+                                        }
+                                    }
+                                </ul>
                             }
                         </li>
                     </ul>
                 </nav>
+
                 <!-- /.sidebar-menu -->
             </div>
             <!-- /.sidebar -->
@@ -424,7 +420,7 @@
     <script src="~/Admin/dist/js/adminlte.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.13/js/select2.min.js"></script>
     <script src='https://cdn.jsdelivr.net/npm/froala-editor@3.2.6/js/froala_editor.pkgd.min.js'></script>
-    @*  <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.min.js"></script> *@
+    <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.13/js/select2.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@10"></script>
     <!-- AdminLTE dashboard demo (This is only for demo purposes) -->

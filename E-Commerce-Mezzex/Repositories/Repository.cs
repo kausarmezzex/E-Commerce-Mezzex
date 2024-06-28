@@ -46,8 +46,6 @@ namespace E_Commerce_Mezzex.Repositories
             }
         }
 
-
-
         public async Task UpdateAsync(T entity)
         {
             try

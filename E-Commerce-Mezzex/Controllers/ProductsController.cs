@@ -40,13 +40,23 @@ namespace E_Commerce_Mezzex.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> AddProduct(Product product)
         {
-            if (!ModelState.IsValid)
+            if (ModelState.IsValid)
             {
                 HandleTags(product);
                 await _productRepository.AddAsync(product);
 
                 await AssignCategoriesToProduct(product);
                 await AssignRelatedProductsToProduct(product);
+
+                // Save paired product details
+                if (product.PairedProductId.HasValue)
+                {
+                    var pairedProduct = await _productRepository.GetByIdAsync(product.PairedProductId.Value);
+                    if (pairedProduct != null)
+                    {
+                        product.PairedProduct = pairedProduct;
+                    }
+                }
 
                 await _productRepository.UpdateAsync(product);
 
@@ -169,7 +179,19 @@ namespace E_Commerce_Mezzex.Controllers
             ViewBag.Categories = BuildCategorySelectList(categories);
             ViewBag.Brands = new SelectList(await _brandRepository.GetAllAsync(), "Id", "Name");
 
+            // Ensure products include their categories
             var products = await _productRepository.GetAllAsync();
+
+            // Populate ProductViewModel list
+            var productList = products.Select(product => new ProductViewModel
+            {
+                Id = product.Id,
+                Name = product.Name,
+                SKU  = product.SKU,
+                Price = product.Price
+            }).ToList();
+
+            ViewBag.Products = productList;
 
             var relatedProducts = products.Select(product => new
             {
@@ -179,9 +201,12 @@ namespace E_Commerce_Mezzex.Controllers
             }).ToList();
 
             ViewBag.RelatedProducts = relatedProducts;
-            ViewBag.CrossSellProducts = relatedProducts; // Reuse the same list for cross-sell products
-            ViewBag.UpsellProducts = relatedProducts; // Reuse the same list for up-sell products
+            ViewBag.CrossSellProducts = relatedProducts;
+            ViewBag.UpsellProducts = relatedProducts;
         }
+
+
+
 
         private List<SelectListItem> BuildCategorySelectList(IEnumerable<Category> categories, int? parentId = null, string prefix = "")
         {

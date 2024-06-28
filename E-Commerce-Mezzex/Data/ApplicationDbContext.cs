@@ -147,6 +147,12 @@ public class ApplicationDbContext : IdentityDbContext<ApplicationUser, Applicati
             .HasForeignKey(pvv => pvv.VariationValueId)
             .OnDelete(DeleteBehavior.Restrict); // Specify RESTRICT to avoid cycles
 
-        // End of OnModelCreating
+        // Configure Paired Product relationship
+        builder.Entity<Product>()
+            .HasOne(p => p.PairedProduct)
+            .WithMany()
+            .HasForeignKey(p => p.PairedProductId)
+            .OnDelete(DeleteBehavior.Restrict); // Adjust as necessary
     }
+
 }
