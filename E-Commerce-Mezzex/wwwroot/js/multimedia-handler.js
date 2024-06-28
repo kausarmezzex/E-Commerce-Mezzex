@@ -118,10 +118,12 @@
                 AltAttribute: altAttribute,
                 TitleAttribute: titleAttribute,
                 MediaType: mediaType,
-                ProductId: $('#productId').val(),
-                VariationValueId: variationValueId
+                ProductId: parseInt($('#productId').val()), // Ensure ProductId is an integer
+                VariationValueId: parseInt(variationValueId) // Ensure VariationValueId is an integer
             });
         });
+
+        console.log(imageDetails); // Log the imageDetails for debugging
 
         $.ajax({
             url: '/api/ImagesDetails',
@@ -140,7 +142,8 @@
                 });
             },
             error: function (xhr, status, error) {
-                console.error(xhr.responseText); // Log the error response for debugging
+                console.error(xhr.responseText);
+                console.log(imageDetails);// Log the error response for debugging
                 Swal.fire({
                     icon: 'error',
                     title: 'Error',
@@ -149,4 +152,5 @@
             }
         });
     });
+
 });

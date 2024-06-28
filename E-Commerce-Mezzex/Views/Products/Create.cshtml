@@ -14,7 +14,9 @@
         <a class="nav-link" id="custom-tabs-three-seo-tab" data-toggle="pill" href="#custom-tabs-three-seo" role="tab" aria-controls="custom-tabs-three-seo" aria-selected="false">SEO Information</a>
     </li>
     <li class="nav-item">
-        <a class="nav-link" id="custom-tabs-three-related-products-tab" data-toggle="pill" href="#custom-tabs-three-related-products" role="tab" aria-controls="custom-tabs-three-related-products" aria-selected="false">Related Products</a>
+        <a class="nav-link" id="custom-tabs-three-related-products-tab" data-toggle="pill" href="#custom-tabs-three-related-products" role="tab" aria-controls="custom-tabs-three-related-products" aria-selected="false">Select Relationships</a>
+    </li>
+
     </li>
     <li class="nav-item">
         <a class="nav-link" id="custom-tabs-three-multimedia-tab" data-toggle="pill" href="#custom-tabs-three-multimedia" role="tab" aria-controls="custom-tabs-three-multimedia" aria-selected="false">Multimedia</a>
@@ -56,6 +58,10 @@
 
 @section Scripts {
     <partial name="_ValidationScriptsPartial" />
+    <script src="~/js/multimedia-handler.js"></script>
+
+    <script src="~/js/variation-handler.js"></script>
+    <script src="~/js/product-form.js"></script>
     <script>
         $(document).ready(function () {
             $('#relatedProductsTable').DataTable({
@@ -80,7 +86,4 @@
             });
         });
     </script>
-    <script src="~/js/multimedia-handler.js"></script>
-    <script src="~/js/variation-handler.js"></script>
-    <script src="~/js/product-form.js"></script>
 }

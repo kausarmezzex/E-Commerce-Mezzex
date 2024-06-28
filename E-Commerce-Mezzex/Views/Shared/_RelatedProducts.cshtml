@@ -11,8 +11,10 @@
                         <table id="relatedProductsTable" class="table table-bordered table-hover" aria-describedby="relatedProductsInfo">
                             <thead>
                                 <tr>
-                                    <th>Select</th>
                                     <th>Product Name</th>
+                                    <th>Related</th>
+                                    <th>Cross-Sell</th>
+                                    <th>Up-Sell</th>
                                     <th>Publish Status</th>
                                 </tr>
                             </thead>
@@ -20,13 +22,25 @@
                                 @foreach (var product in ViewBag.RelatedProducts)
                                 {
                                     <tr>
+                                        <td>@product.Text</td>
                                         <td>
                                             <div class="custom-control custom-checkbox">
-                                                <input type="checkbox" class="custom-control-input" id="customCheckbox_@product.Value" name="RelatedProductId" value="@product.Value" />
-                                                <label class="custom-control-label" for="customCheckbox_@product.Value"></label>
+                                                <input type="checkbox" class="custom-control-input" id="relatedCheckbox_@product.Value" name="RelatedProductIds" value="@product.Value" />
+                                                <label class="custom-control-label" for="relatedCheckbox_@product.Value"></label>
                                             </div>
                                         </td>
-                                        <td>@product.Text</td>
+                                        <td>
+                                            <div class="custom-control custom-checkbox">
+                                                <input type="checkbox" class="custom-control-input" id="crossSellCheckbox_@product.Value" name="CrossSellProductIds" value="@product.Value" />
+                                                <label class="custom-control-label" for="crossSellCheckbox_@product.Value"></label>
+                                            </div>
+                                        </td>
+                                        <td>
+                                            <div class="custom-control custom-checkbox">
+                                                <input type="checkbox" class="custom-control-input" id="upSellCheckbox_@product.Value" name="UpSellProductIds" value="@product.Value" />
+                                                <label class="custom-control-label" for="upSellCheckbox_@product.Value"></label>
+                                            </div>
+                                        </td>
                                         <td>
                                             @if (product.Published)
                                             {
@@ -42,8 +56,10 @@
                             </tbody>
                             <tfoot>
                                 <tr>
-                                    <th>Select</th>
                                     <th>Product Name</th>
+                                    <th>Related</th>
+                                    <th>Cross-Sell</th>
+                                    <th>Up-Sell</th>
                                     <th>Publish Status</th>
                                 </tr>
                             </tfoot>

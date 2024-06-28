@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -10,9 +11,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace E_Commerce_Mezzex.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20240627094258_Add Cross Sell And UpSell")]
+    partial class AddCrossSellAndUpSell
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -464,6 +467,21 @@ namespace E_Commerce_Mezzex.Migrations
                     b.ToTable("Products");
                 });
 
+            modelBuilder.Entity("E_Commerce_Mezzex.Models.Domain.ProductCrossSell", b =>
+                {
+                    b.Property<int>("ProductId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("CrossSellProductId")
+                        .HasColumnType("int");
+
+                    b.HasKey("ProductId", "CrossSellProductId");
+
+                    b.HasIndex("CrossSellProductId");
+
+                    b.ToTable("ProductCrossSells");
+                });
+
             modelBuilder.Entity("E_Commerce_Mezzex.Models.Domain.ProductSpecification", b =>
                 {
                     b.Property<string>("Key")
@@ -482,6 +500,21 @@ namespace E_Commerce_Mezzex.Migrations
                         .IsUnique();
 
                     b.ToTable("ProductSpecifications");
+                });
+
+            modelBuilder.Entity("E_Commerce_Mezzex.Models.Domain.ProductUpsell", b =>
+                {
+                    b.Property<int>("ProductId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("UpsellProductId")
+                        .HasColumnType("int");
+
+                    b.HasKey("ProductId", "UpsellProductId");
+
+                    b.HasIndex("UpsellProductId");
+
+                    b.ToTable("ProductUpsells");
                 });
 
             modelBuilder.Entity("E_Commerce_Mezzex.Models.Domain.ProductVariationValue", b =>
@@ -540,15 +573,6 @@ namespace E_Commerce_Mezzex.Migrations
                         .HasColumnType("int");
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
-
-                    b.Property<bool>("IsCrossSellProduct")
-                        .HasColumnType("bit");
-
-                    b.Property<bool>("IsRelatedProduct")
-                        .HasColumnType("bit");
-
-                    b.Property<bool>("IsUpSellProduct")
-                        .HasColumnType("bit");
 
                     b.Property<int>("MainProductId")
                         .HasColumnType("int");
@@ -851,6 +875,25 @@ namespace E_Commerce_Mezzex.Migrations
                     b.Navigation("VariationValue");
                 });
 
+            modelBuilder.Entity("E_Commerce_Mezzex.Models.Domain.ProductCrossSell", b =>
+                {
+                    b.HasOne("E_Commerce_Mezzex.Models.Domain.Product", "CrossSellProduct")
+                        .WithMany()
+                        .HasForeignKey("CrossSellProductId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.HasOne("E_Commerce_Mezzex.Models.Domain.Product", "Product")
+                        .WithMany("CrossSellProducts")
+                        .HasForeignKey("ProductId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.Navigation("CrossSellProduct");
+
+                    b.Navigation("Product");
+                });
+
             modelBuilder.Entity("E_Commerce_Mezzex.Models.Domain.ProductSpecification", b =>
                 {
                     b.HasOne("E_Commerce_Mezzex.Models.Domain.Product", null)
@@ -858,6 +901,25 @@ namespace E_Commerce_Mezzex.Migrations
                         .HasForeignKey("E_Commerce_Mezzex.Models.Domain.ProductSpecification", "ProductId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
+                });
+
+            modelBuilder.Entity("E_Commerce_Mezzex.Models.Domain.ProductUpsell", b =>
+                {
+                    b.HasOne("E_Commerce_Mezzex.Models.Domain.Product", "Product")
+                        .WithMany("UpsellProducts")
+                        .HasForeignKey("ProductId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.HasOne("E_Commerce_Mezzex.Models.Domain.Product", "UpsellProduct")
+                        .WithMany()
+                        .HasForeignKey("UpsellProductId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.Navigation("Product");
+
+                    b.Navigation("UpsellProduct");
                 });
 
             modelBuilder.Entity("E_Commerce_Mezzex.Models.Domain.ProductVariationValue", b =>
@@ -1060,6 +1122,8 @@ namespace E_Commerce_Mezzex.Migrations
 
             modelBuilder.Entity("E_Commerce_Mezzex.Models.Domain.Product", b =>
                 {
+                    b.Navigation("CrossSellProducts");
+
                     b.Navigation("CustomerReviews");
 
                     b.Navigation("Images");
@@ -1071,6 +1135,8 @@ namespace E_Commerce_Mezzex.Migrations
                     b.Navigation("RelatedProducts");
 
                     b.Navigation("Specifications");
+
+                    b.Navigation("UpsellProducts");
 
                     b.Navigation("VariationValues");
                 });

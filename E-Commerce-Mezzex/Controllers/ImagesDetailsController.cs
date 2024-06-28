@@ -23,7 +23,7 @@ namespace E_Commerce_Mezzex.Controllers
         {
             if (images == null || images.Count == 0)
             {
-                return BadRequest("No image details received");
+                return BadRequest(new { type = "https://tools.ietf.org/html/rfc9110#section-15.5.1", title = "One or more validation errors occurred.", status = 400, errors = new { images = new[] { "The images field is required." } } });
             }
 
             try
@@ -50,8 +50,9 @@ namespace E_Commerce_Mezzex.Controllers
             {
                 // Log the exception (ensure you have a logging mechanism)
                 Console.Error.WriteLine(ex);
-                return StatusCode(500, "An error occurred while saving the images.");
+                return StatusCode(500, new { type = "https://tools.ietf.org/html/rfc9110#section-15.5.1", title = "An error occurred while saving the images.", status = 500 });
             }
         }
+
     }
 }

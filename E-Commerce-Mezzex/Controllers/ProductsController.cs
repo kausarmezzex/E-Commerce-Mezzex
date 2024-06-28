@@ -23,7 +23,7 @@ namespace E_Commerce_Mezzex.Controllers
             _productRepository = productRepository;
             _categoryRepository = categoryRepository;
             _brandRepository = brandRepository;
-            this._context = context;
+            _context = context;
         }
 
         [Authorize(Policy = "CreateProductPolicy")]
@@ -50,7 +50,7 @@ namespace E_Commerce_Mezzex.Controllers
 
                 await _productRepository.UpdateAsync(product);
 
-                // Set productId in ViewBag
+                // Set productId in TempData
                 TempData["ProductId"] = product.Id;
 
                 return Json(new { success = true, productId = product.Id });
@@ -60,26 +60,34 @@ namespace E_Commerce_Mezzex.Controllers
             return PartialView("Create", product);
         }
 
-
         private async Task AssignRelatedProductsToProduct(Product product)
         {
-            if (product.RelatedProductId != null)
+            var relatedProductIds = Request.Form["RelatedProductIds"].ToString().Split(',').Select(int.Parse).ToList();
+            var crossSellProductIds = Request.Form["CrossSellProductIds"].ToString().Split(',').Select(int.Parse).ToList();
+            var upSellProductIds = Request.Form["UpSellProductIds"].ToString().Split(',').Select(int.Parse).ToList();
+
+            product.RelatedProducts = new List<RelatedProduct>();
+
+            foreach (var productId in relatedProductIds.Concat(crossSellProductIds).Concat(upSellProductIds).Distinct())
             {
-                product.RelatedProducts = new List<RelatedProduct>();
-                foreach (var relatedProductId in product.RelatedProductId)
+                var relatedProduct = await _productRepository.GetByIdAsync(productId);
+                if (relatedProduct != null)
                 {
-                    var relatedProduct = await _productRepository.GetByIdAsync(relatedProductId);
-                    if (relatedProduct != null)
+                    var relatedProductEntry = new RelatedProduct
                     {
-                        product.RelatedProducts.Add(new RelatedProduct
-                        {
-                            MainProductId = product.Id,
-                            RelatedProductId = relatedProductId,
-                            RelatedProductName = relatedProduct.Name,
-                            RelatedIsPublish = relatedProduct.IsPublish,
-                            RelatedProductPrice = relatedProduct.Price
-                        });
-                    }
+                        MainProductId = product.Id,
+                        RelatedProductId = productId,
+                        RelatedProductName = relatedProduct.Name,
+                        RelatedIsPublish = relatedProduct.IsPublish,
+                        RelatedProductPrice = relatedProduct.Price,
+                        MainProduct = product,
+                        RelatedProductDetails = relatedProduct,
+                        IsRelatedProduct = relatedProductIds.Contains(productId),
+                        IsCrossSellProduct = crossSellProductIds.Contains(productId),
+                        IsUpSellProduct = upSellProductIds.Contains(productId)
+                    };
+
+                    product.RelatedProducts.Add(relatedProductEntry);
                 }
             }
         }
@@ -171,9 +179,9 @@ namespace E_Commerce_Mezzex.Controllers
             }).ToList();
 
             ViewBag.RelatedProducts = relatedProducts;
+            ViewBag.CrossSellProducts = relatedProducts; // Reuse the same list for cross-sell products
+            ViewBag.UpsellProducts = relatedProducts; // Reuse the same list for up-sell products
         }
-
-
 
         private List<SelectListItem> BuildCategorySelectList(IEnumerable<Category> categories, int? parentId = null, string prefix = "")
         {

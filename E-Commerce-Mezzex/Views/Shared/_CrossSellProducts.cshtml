@@ -1,0 +1,60 @@
+﻿@model E_Commerce_Mezzex.Models.Domain.Product
+
+<div class="form-group mb-3">
+    <label class="control-label mb-2">Cross Sell Products</label>
+    @if (ViewBag.CrossSellProducts != null)
+    {
+        <div class="card-body">
+            <div id="crossSellProductsWrapper" class="dataTables_wrapper dt-bootstrap4">
+                <div class="row">
+                    <div class="col-sm-12">
+                        <table id="crossSellProductsTable" class="table table-bordered table-hover" aria-describedby="crossSellProductsInfo">
+                            <thead>
+                                <tr>
+                                    <th>Select</th>
+                                    <th>Product Name</th>
+                                    <th>Publish Status</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @foreach (var product in ViewBag.CrossSellProducts)
+                                {
+                                    <tr>
+                                        <td>
+                                            <div class="custom-control custom-checkbox">
+                                                <input type="checkbox" class="custom-control-input" id="customCheckbox_@product.Value" name="CrossSellProductIds" value="@product.Value" />
+                                                <label class="custom-control-label" for="customCheckbox_@product.Value"></label>
+                                            </div>
+                                        </td>
+                                        <td>@product.Text</td>
+                                        <td>
+                                            @if (product.Published)
+                                            {
+                                                <span class="publish-status text-success">✔</span>
+                                            }
+                                            else
+                                            {
+                                                <span class="publish-status text-danger">✘</span>
+                                            }
+                                        </td>
+                                    </tr>
+                                }
+                            </tbody>
+                            <tfoot>
+                                <tr>
+                                    <th>Select</th>
+                                    <th>Product Name</th>
+                                    <th>Publish Status</th>
+                                </tr>
+                            </tfoot>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    }
+    else
+    {
+        <p>No cross sell products available</p>
+    }
+</div>
