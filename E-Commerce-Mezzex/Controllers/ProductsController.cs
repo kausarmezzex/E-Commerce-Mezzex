@@ -72,7 +72,7 @@ namespace E_Commerce_Mezzex.Controllers
 
         private async Task AssignRelatedProductsToProduct(Product product)
         {
-            var relatedProductIds = Request.Form["RelatedProductIds"].ToString().Split(',').Select(int.Parse).ToList();
+            var relatedProductIds = Request.Form["RelatedProductId"].ToString().Split(',').Select(int.Parse).ToList();
             var crossSellProductIds = Request.Form["CrossSellProductIds"].ToString().Split(',').Select(int.Parse).ToList();
             var upSellProductIds = Request.Form["UpSellProductIds"].ToString().Split(',').Select(int.Parse).ToList();
 
