@@ -206,6 +206,12 @@ namespace E_Commerce_Mezzex.Controllers
             return _context.VariationValues.Any(e => e.Id == id);
         }
 
-        
+        [HttpGet]
+        public IActionResult GetVariationForm(int productId)
+        {
+            ViewBag.VariationTypes = new SelectList(_context.VariationTypes, "Id", "Name");
+            var model = new E_Commerce_Mezzex.Models.ViewModel.VariationViewModel { ProductId = productId };
+            return PartialView("_VariationValueForm", model);
+        }
     }
 }

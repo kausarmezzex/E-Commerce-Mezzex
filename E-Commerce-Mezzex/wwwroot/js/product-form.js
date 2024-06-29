@@ -5,7 +5,6 @@
         heightMin: 200
     });
 
-    // Initialize Select2
     $('#tagsInput').select2({
         tags: true,
         tokenSeparators: [',']
@@ -16,8 +15,7 @@
         allowClear: true
     });
 
-    // Form submission
-    $('#productForm').on('submit', function (e) {
+ /*   $('#productForm').on('submit', function (e) {
         e.preventDefault();
 
         if ($(this).data('submitted') === true) {
@@ -37,23 +35,16 @@
         $('input[name="RelatedProductId"]:checked').each(function () {
             selectedRelatedProducts.push($(this).val());
         });
-
         var formData = $(this).serializeArray();
         formData.push({ name: "RelatedProductId", value: selectedRelatedProducts.join(',') });
 
-        $.ajax({
+        *//*$.ajax({
             url: $(this).attr('action'),
             type: $(this).attr('method'),
             data: $.param(formData),
             success: function (response) {
                 if (response.success) {
-                    // Ensure productId input is not added multiple times
-                    if ($('#productId').length === 0) {
-                        $('#productForm').append('<input type="hidden" id="productId" value="' + response.productId + '" />');
-                    } else {
-                        $('#productId').val(response.productId);
-                    }
-
+                    $('#productForm').append('<input type="hidden" id="productId" value="' + response.productId + '" />');
                     Swal.fire('Success', 'Product added successfully!', 'success').then(() => {
                         $('#custom-tabs-three-multimedia').html(`
                             <div class="form-group mb-3">
@@ -94,9 +85,9 @@
                 Swal.fire('Error', 'An error occurred while adding the product.', 'error');
                 $('#productForm').data('submitted', false); // Allow form to be submitted again
             }
-        });
-    });
-
+        });*//*
+    });*/
+   
     // Handle multimedia tab click
     $('#custom-tabs-three-multimedia-tab').on('click', function (e) {
         if (!$('#productId').val()) {
@@ -106,14 +97,12 @@
             });
         }
     });
-
-    // Handle variation tab click
-    $('#custom-tabs-three-variation-tab').on('click', function (e) {
+/*    $('#custom-tabs-three-variation-tab').on('click', function (e) {
         if (!$('#productId').val()) {
             e.preventDefault();
             Swal.fire('Warning', 'Please add the product first.', 'warning').then(() => {
                 $('#custom-tabs-three-home-tab').tab('show');
             });
         }
-    });
+    });*/
 });

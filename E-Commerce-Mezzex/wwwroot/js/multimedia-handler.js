@@ -7,7 +7,7 @@
         var formData = new FormData(this);
 
         $.ajax({
-            url: $(this).attr("action"), // Ensure this URL is correct
+            url: $(this).attr("action"),
             type: $(this).attr("method"),
             data: formData,
             processData: false,
@@ -26,7 +26,7 @@
                         $("#VariationValueForm")[0].reset();
 
                         // Append new variation to the list
-                        $('#variationList').append(`<li>${response.variationValueName} - ${response.variationType}</li>`);
+                        $('#variationList').append(`<li>${response.variationValueName} - ${response.variationType}</li>`); // Assuming 'name' is a property of VariationType
 
                         // Automatically trigger the Save Images button click
                         $("#uploadAllImages").trigger("click");
@@ -57,7 +57,7 @@
 
     function handleImageUpload(inputElement, imageTableBody) {
         let files = inputElement.files;
-        let productId = $('#ProductId').val(); // Ensure the ID is correct
+        let productId = $('#productId').val();
 
         for (let i = 0; i < files.length; i++) {
             let data = new FormData();
@@ -118,7 +118,7 @@
                 AltAttribute: altAttribute,
                 TitleAttribute: titleAttribute,
                 MediaType: mediaType,
-                ProductId: parseInt($('#ProductId').val()), // Ensure ProductId is an integer
+                ProductId: parseInt($('#productId').val()), // Ensure ProductId is an integer
                 VariationValueId: parseInt(variationValueId) // Ensure VariationValueId is an integer
             });
         });
@@ -138,13 +138,12 @@
                     timer: 2000,
                     showConfirmButton: false
                 }).then(() => {
-                    // Optional redirect
-                    // window.location.href = '/Products/Index'; 
+                    /* window.location.href = '/Products/Index'; // Redirect to product index*/
                 });
             },
             error: function (xhr, status, error) {
                 console.error(xhr.responseText);
-                console.log(imageDetails); // Log the error response for debugging
+                console.log(imageDetails);// Log the error response for debugging
                 Swal.fire({
                     icon: 'error',
                     title: 'Error',
