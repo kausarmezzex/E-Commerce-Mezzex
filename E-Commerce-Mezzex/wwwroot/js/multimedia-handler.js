@@ -1,69 +1,17 @@
 ﻿$(document).ready(function () {
-    var variationValueId = null;
-
-    // Handle form submission for VariationValue
-    $("#VariationValueForm").on("submit", function (event) {
-        event.preventDefault();
-        var formData = new FormData(this);
-
-        $.ajax({
-            url: $(this).attr("action"),
-            type: $(this).attr("method"),
-            data: formData,
-            processData: false,
-            contentType: false,
-            success: function (response) {
-                if (response.success) {
-                    variationValueId = response.variationValueId;
-                    Swal.fire({
-                        icon: 'success',
-                        title: 'Success',
-                        text: response.message,
-                        timer: 2000,
-                        showConfirmButton: false
-                    }).then(() => {
-                        // Reset the form
-                        $("#VariationValueForm")[0].reset();
-
-                        // Append new variation to the list
-                        $('#variationList').append(`<li>${response.variationValueName} - ${response.variationType}</li>`); // Assuming 'name' is a property of VariationType
-
-                        // Automatically trigger the Save Images button click
-                        $("#uploadAllImages").trigger("click");
-                        $('#imageTableBody').empty(); // Clear image table
-                    });
-                } else {
-                    Swal.fire({
-                        icon: 'error',
-                        title: 'Error',
-                        text: response.message
-                    });
-                }
-            },
-            error: function (xhr, status, error) {
-                Swal.fire({
-                    icon: 'error',
-                    title: 'Error',
-                    text: 'An error occurred while submitting the form. Please try again.'
-                });
-            }
-        });
-    });
-
-    // Handle image upload
-    $(document).on('change', '#multipleImageUpload', function () {
-        handleImageUpload(this, $('#imageTableBody'));
-    });
+    let variationValueId = null;
+    let productId = $('#productId').val(); // Assuming this is set correctly after product creation
 
     function handleImageUpload(inputElement, imageTableBody) {
         let files = inputElement.files;
-        let productId = $('#productId').val();
 
         for (let i = 0; i < files.length; i++) {
             let data = new FormData();
             data.append('file', files[i]);
             data.append('productId', productId);
-            data.append('variationValueId', variationValueId);
+            if (variationValueId) {
+                data.append('variationValueId', variationValueId);
+            }
 
             let mediaType = files[i].type.startsWith('image') ? 'Image' : (files[i].type.startsWith('video') ? 'Video' : 'Unknown');
 
@@ -97,15 +45,9 @@
         }
     }
 
-    // Handle deleting image row
-    $(document).on('click', '.delete-btn', function () {
-        $(this).closest('tr').remove();
-    });
-
-    // Handle saving all images
-    $(document).on('click', '#uploadAllImages', function () {
+    function saveAllImages(imageTableBody) {
         let imageDetails = [];
-        $('#imageTableBody tr').each(function () {
+        imageTableBody.find('tr').each(function () {
             let seoFilename = $(this).find('.seo-filename').val();
             let altAttribute = $(this).find('.alt-attribute').val();
             let titleAttribute = $(this).find('.title-attribute').val();
@@ -118,8 +60,8 @@
                 AltAttribute: altAttribute,
                 TitleAttribute: titleAttribute,
                 MediaType: mediaType,
-                ProductId: parseInt($('#productId').val()), // Ensure ProductId is an integer
-                VariationValueId: parseInt(variationValueId) // Ensure VariationValueId is an integer
+                ProductId: parseInt(productId), // Ensure ProductId is an integer
+                VariationValueId: variationValueId ? parseInt(variationValueId) : null // Ensure VariationValueId is an integer if present
             });
         });
 
@@ -151,6 +93,61 @@
                 });
             }
         });
+    }
+
+    $(document).on('change', '#multipleImageUpload', function () {
+        handleImageUpload(this, $('#imageTableBody'));
     });
 
+    $(document).on('click', '.delete-btn', function () {
+        $(this).closest('tr').remove();
+    });
+
+    $(document).on('click', '#uploadAllImages', function () {
+        saveAllImages($('#imageTableBody'));
+    });
+
+    // Variation value form submission
+    $("#VariationValueForm").on("submit", function (event) {
+        event.preventDefault();
+        var formData = new FormData(this);
+
+        $.ajax({
+            url: $(this).attr("action"),
+            type: $(this).attr("method"),
+            data: formData,
+            processData: false,
+            contentType: false,
+            success: function (response) {
+                if (response.success) {
+                    variationValueId = response.variationValueId;
+                    Swal.fire({
+                        icon: 'success',
+                        title: 'Success',
+                        text: response.message,
+                        timer: 2000,
+                        showConfirmButton: false
+                    }).then(() => {
+                        $("#VariationValueForm")[0].reset();
+                        $('#variationList').append(`<li>${response.variationValueName} - ${response.variationType}</li>`); // Assuming 'name' is a property of VariationType
+                        $("#uploadAllImages").trigger("click");
+                        $('#imageTableBody').empty();
+                    });
+                } else {
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Error',
+                        text: response.message
+                    });
+                }
+            },
+            error: function (xhr, status, error) {
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Error',
+                    text: 'An error occurred while submitting the form. Please try again.'
+                });
+            }
+        });
+    });
 });

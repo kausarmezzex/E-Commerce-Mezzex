@@ -3,6 +3,9 @@ using E_Commerce_Mezzex.Models.ViewModel;
 using E_Commerce_Mezzex.Repositories;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using System.Threading.Tasks;
+using System;
+using System.Collections.Generic;
 
 namespace E_Commerce_Mezzex.Controllers
 {
@@ -30,10 +33,15 @@ namespace E_Commerce_Mezzex.Controllers
             {
                 foreach (var image in images)
                 {
+                    if (!int.TryParse(image.ProductId.ToString(), out int productId))
+                    {
+                        return BadRequest(new { type = "https://tools.ietf.org/html/rfc9110#section-15.5.1", title = "One or more validation errors occurred.", status = 400, errors = new { ProductId = new[] { "The ProductId must be a valid integer." } } });
+                    }
+
                     var picture = new Picture
                     {
                         VirtualPath = image.VirtualPath,
-                        ProductId = image.ProductId,
+                        ProductId = productId,
                         SeoFilename = image.SeoFilename,
                         AltAttribute = image.AltAttribute,
                         TitleAttribute = image.TitleAttribute,
@@ -53,6 +61,5 @@ namespace E_Commerce_Mezzex.Controllers
                 return StatusCode(500, new { type = "https://tools.ietf.org/html/rfc9110#section-15.5.1", title = "An error occurred while saving the images.", status = 500 });
             }
         }
-
     }
 }
