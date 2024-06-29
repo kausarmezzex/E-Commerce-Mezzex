@@ -1,6 +1,6 @@
 ﻿namespace E_Commerce_Mezzex.Models.Domain
 {
-    public class RelatedProduct
+    public class ProductRelationship
     {
         public int Id { get; set; } // Unique identifier for this relationship
         public int MainProductId { get; set; } // ID of the main product

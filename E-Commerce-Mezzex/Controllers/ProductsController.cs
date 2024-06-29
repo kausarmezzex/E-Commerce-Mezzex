@@ -46,7 +46,7 @@ namespace E_Commerce_Mezzex.Controllers
                 await _productRepository.AddAsync(product);
 
                 await AssignCategoriesToProduct(product);
-                await AssignRelatedProductsToProduct(product);
+                await AssignProductRelationshipsToProduct(product);
 
                 // Save paired product details
                 if (product.PairedProductId.HasValue)
@@ -70,20 +70,22 @@ namespace E_Commerce_Mezzex.Controllers
             return PartialView("Create", product);
         }
 
-        private async Task AssignRelatedProductsToProduct(Product product)
+        private async Task AssignProductRelationshipsToProduct(Product product)
         {
-            var relatedProductIds = Request.Form["RelatedProductId"].ToString().Split(',').Select(int.Parse).ToList();
-            var crossSellProductIds = Request.Form["CrossSellProductIds"].ToString().Split(',').Select(int.Parse).ToList();
-            var upSellProductIds = Request.Form["UpSellProductIds"].ToString().Split(',').Select(int.Parse).ToList();
+            var relatedProductIds = Request.Form["RelatedProductId"].ToString().Split(',').Where(id => !string.IsNullOrEmpty(id)).Select(int.Parse).ToList();
+            var crossSellProductIds = Request.Form["CrossSellProductIds"].ToString().Split(',').Where(id => !string.IsNullOrEmpty(id)).Select(int.Parse).ToList();
+            var upSellProductIds = Request.Form["UpSellProductIds"].ToString().Split(',').Where(id => !string.IsNullOrEmpty(id)).Select(int.Parse).ToList();
 
-            product.RelatedProducts = new List<RelatedProduct>();
+            product.ProductRelationships = new List<ProductRelationship>();
 
-            foreach (var productId in relatedProductIds.Concat(crossSellProductIds).Concat(upSellProductIds).Distinct())
+            var allProductIds = relatedProductIds.Concat(crossSellProductIds).Concat(upSellProductIds).Distinct().ToList();
+
+            foreach (var productId in allProductIds)
             {
                 var relatedProduct = await _productRepository.GetByIdAsync(productId);
                 if (relatedProduct != null)
                 {
-                    var relatedProductEntry = new RelatedProduct
+                    var relationship = new ProductRelationship
                     {
                         MainProductId = product.Id,
                         RelatedProductId = productId,
@@ -97,10 +99,12 @@ namespace E_Commerce_Mezzex.Controllers
                         IsUpSellProduct = upSellProductIds.Contains(productId)
                     };
 
-                    product.RelatedProducts.Add(relatedProductEntry);
+                    product.ProductRelationships.Add(relationship);
                 }
             }
         }
+
+
 
         [HttpGet]
         [Authorize(Policy = "CreateProductPolicy")]

@@ -1,12 +1,14 @@
 ﻿@model E_Commerce_Mezzex.Models.ViewModel.VariationViewModel
 
+
 @{
-    int? productIdFromTempData = TempData["ProductId"] as int?;
+    var productId = Model.ProductId;
 }
+
 <form id="VariationValueForm" asp-controller="VariationValues" asp-action="Create" method="post">
     @Html.AntiForgeryToken()
 
-    <input type="hidden" id="productId" name="ProductId" value="@productIdFromTempData" />
+    <input type="hidden" name="ProductId" value="@productId" />
 
     <!-- VariationValue form fields -->
     <div class="form-group">
@@ -75,7 +77,6 @@
         <button type="button" id="uploadAllImages" class="btn btn-primary">Save Images</button>
     </div>
 </form>
-
 
 <!-- Modal for creating new VariationType -->
 <div class="modal fade" id="variationTypeModal" tabindex="-1" role="dialog" aria-labelledby="variationTypeModalLabel" aria-hidden="true">

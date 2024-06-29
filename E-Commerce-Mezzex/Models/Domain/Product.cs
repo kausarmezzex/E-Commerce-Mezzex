@@ -34,7 +34,7 @@ namespace E_Commerce_Mezzex.Models.Domain
         // New properties
         public ICollection<CustomerReview>? CustomerReviews { get; set; } = new List<CustomerReview>();
         public ProductSpecification? Specifications { get; set; }
-        public ICollection<RelatedProduct>? RelatedProducts { get; set; } = new List<RelatedProduct>();
+        public ICollection<ProductRelationship>? ProductRelationships { get; set; } = new List<ProductRelationship>();
         public ICollection<QuestionAnswer>? QuestionsAnswers { get; set; } = new List<QuestionAnswer>();
 
         // New collection for Variation Types

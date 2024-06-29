@@ -20,7 +20,7 @@ public class ApplicationDbContext : IdentityDbContext<ApplicationUser, Applicati
     public DbSet<UserPermission> UserPermissions { get; set; }
     public DbSet<CustomerReview> CustomerReviews { get; set; }
     public DbSet<ProductSpecification> ProductSpecifications { get; set; }
-    public DbSet<RelatedProduct> RelatedProducts { get; set; }
+    public DbSet<ProductRelationship> ProductRelationships { get; set; }
     public DbSet<QuestionAnswer> QuestionsAnswers { get; set; }
     public DbSet<VariationType> VariationTypes { get; set; }
     public DbSet<VariationValue> VariationValues { get; set; }
@@ -97,9 +97,9 @@ public class ApplicationDbContext : IdentityDbContext<ApplicationUser, Applicati
             .HasForeignKey(cr => cr.ProductId);
 
         builder.Entity<Product>()
-            .HasMany(p => p.RelatedProducts)
-            .WithOne(rp => rp.MainProduct)
-            .HasForeignKey(rp => rp.MainProductId)
+            .HasMany(p => p.ProductRelationships)
+            .WithOne(pr => pr.MainProduct)
+            .HasForeignKey(pr => pr.MainProductId)
             .OnDelete(DeleteBehavior.Restrict);
 
         builder.Entity<Product>()
@@ -107,17 +107,17 @@ public class ApplicationDbContext : IdentityDbContext<ApplicationUser, Applicati
             .WithOne()
             .HasForeignKey(qa => qa.ProductId);
 
-        // Configure RelatedProduct relationships
-        builder.Entity<RelatedProduct>()
-            .HasOne(rp => rp.MainProduct)
-            .WithMany(p => p.RelatedProducts)
-            .HasForeignKey(rp => rp.MainProductId)
+        // Configure ProductRelationship relationships
+        builder.Entity<ProductRelationship>()
+            .HasOne(pr => pr.MainProduct)
+            .WithMany(p => p.ProductRelationships)
+            .HasForeignKey(pr => pr.MainProductId)
             .OnDelete(DeleteBehavior.Restrict);
 
-        builder.Entity<RelatedProduct>()
-            .HasOne(rp => rp.RelatedProductDetails)
+        builder.Entity<ProductRelationship>()
+            .HasOne(pr => pr.RelatedProductDetails)
             .WithMany()
-            .HasForeignKey(rp => rp.RelatedProductId)
+            .HasForeignKey(pr => pr.RelatedProductId)
             .OnDelete(DeleteBehavior.Restrict);
 
         // Configure VariationType and VariationValue relationships
@@ -154,5 +154,4 @@ public class ApplicationDbContext : IdentityDbContext<ApplicationUser, Applicati
             .HasForeignKey(p => p.PairedProductId)
             .OnDelete(DeleteBehavior.Restrict); // Adjust as necessary
     }
-
 }

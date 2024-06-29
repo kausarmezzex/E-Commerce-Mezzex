@@ -5,6 +5,7 @@
         heightMin: 200
     });
 
+    // Initialize Select2
     $('#tagsInput').select2({
         tags: true,
         tokenSeparators: [',']
@@ -15,6 +16,7 @@
         allowClear: true
     });
 
+    // Form submission
     $('#productForm').on('submit', function (e) {
         e.preventDefault();
 
@@ -35,6 +37,7 @@
         $('input[name="RelatedProductId"]:checked').each(function () {
             selectedRelatedProducts.push($(this).val());
         });
+
         var formData = $(this).serializeArray();
         formData.push({ name: "RelatedProductId", value: selectedRelatedProducts.join(',') });
 
@@ -44,7 +47,13 @@
             data: $.param(formData),
             success: function (response) {
                 if (response.success) {
-                    $('#productForm').append('<input type="hidden" id="productId" value="' + response.productId + '" />');
+                    // Ensure productId input is not added multiple times
+                    if ($('#productId').length === 0) {
+                        $('#productForm').append('<input type="hidden" id="productId" value="' + response.productId + '" />');
+                    } else {
+                        $('#productId').val(response.productId);
+                    }
+
                     Swal.fire('Success', 'Product added successfully!', 'success').then(() => {
                         $('#custom-tabs-three-multimedia').html(`
                             <div class="form-group mb-3">
@@ -87,7 +96,7 @@
             }
         });
     });
-   
+
     // Handle multimedia tab click
     $('#custom-tabs-three-multimedia-tab').on('click', function (e) {
         if (!$('#productId').val()) {
@@ -97,12 +106,14 @@
             });
         }
     });
-/*    $('#custom-tabs-three-variation-tab').on('click', function (e) {
+
+    // Handle variation tab click
+    $('#custom-tabs-three-variation-tab').on('click', function (e) {
         if (!$('#productId').val()) {
             e.preventDefault();
             Swal.fire('Warning', 'Please add the product first.', 'warning').then(() => {
                 $('#custom-tabs-three-home-tab').tab('show');
             });
         }
-    });*/
+    });
 });
